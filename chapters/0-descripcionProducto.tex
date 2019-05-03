@@ -1,0 +1,26 @@
+\chapter{\descripcionProducto}
+% \thispagestyle{empty}
+
+\paragraph{}
+Teacheck es una aplicación para realizar el seguimiento del alumnado de una universidad.
+Esta aplicación contará con un sistema para analizar el rendimiento y detectar a tiempo un deterioro del mismo. En base a esto, nuestro objetivo es que gracias a los servicios proporcionados se consiga revertir la situación y mejorar tanto el rendimiento como motivación del alumno en concreto. También queremos monitorizar todo el proceso de seguimiento para así poder aligerar la carga de trabajo del profesorado. Como último objetivo tenemos el detectar no solo que el alumno necesita un toque de atención, si no también saber cual es la raíz del problema y a su vez podremos detectar problemas a nivel de clase, esto es, si en una misma clase vemos que se dan los mismos problemas en demasiados casos, se alertará de ello para que el cliente esté al tanto y pueda buscar una solución.
+
+La solución no se centrará en mejorar cómo se imparten las clases, o en hacerle entender mejor al alumno la materia, sino en un proceso el cual analiza y monitoriza los resultados individuales de cada alumno con el fin de encontrar los posibles problemas a tiempo. Esto no quita que nuestros análisis no puedan detectar un posible problema a nivel de clase o de entendimiento del alumno, pero la solución de ese problema no será nuestra responsabilidad. No pretendemos cambiar la forma de funcionar de una institución, sino mejorarla.
+
+La aplicación web contará con un sistema distribuido que será el responsable de proveer servicios básicos a la aplicación o puede que algún servicio adicional acordado con el cliente, se implemente con el sistema. Dicho sistema estará dividido en varios microservicios que ofrecen recursos esenciales a la aplicación principal. Servicios como, Base de Datos, el proveedor de datos de la Universidad, el sistema de IA Machine Learning y como dicho antes si es de interés del cliente, se podrá amoldar a algún sistema que existe y que ya provee todos los datos de los alumnos.
+
+Teacheck, es un sistema de monitoramento que ofrecerá periódicamente análisis sobre la situación de cada alumno registrado en la universidad. Contará con el sistema de Machine Learning (Inteligencia Artificial)  para efectuar los análisis. Estos escaneos de información son específicamente predicciones en base a un modelo que ya dispone el sistema con la información inicial proporcionada por el cliente.
+
+Cada análisis traerá consigo resultados sobre cada alumno en respecto a su rendimiento en el curso correspondiente. Contaremos tanto con los datos recogidos por el profesor como con los que el alumno pueda proporcionar. Por parte del profesorado recogeremos las notas, asistencia y si el alumno hace entrega o no de los trabajos que se mandan. También tendrá como opcionales la atención, motivación y la nota del alumno en los entregables. Luego, el alumno tendrá como tarea opcional hacer un feedback rápido en el cual podrá ofrecer a la aplicación su atención en clase, motivación, asistencia y tiempo dedicado a las asignaturas fuera del horario de clase. Es a tener en cuenta que si los datos opcionales se entregan, se conseguirá un análisis mucho más preciso y eficaz, por eso son importantes unas cuantas claves que más tarde se mencionan en el apartado de actividades y recursos clave.
+
+Teacheck tendrá un sistema de alarmas que funcionará según el resultado de los análisis. Estas alarmas servirán para avisar a los profesores, vía email y aplicación, sobre un estado crítico o sobre la necesidad de darle un toque a un alumno. Entonces, si después de un análisis la aplicación detecta una de las distintas alarmas que tenemos diseñadas, las cuales se dividen en dos grupos, avisará al profesor o responsable correspondiente. Tal y como se acaba de mencionar las alarmas están divididas en dos grandes grupos, uno para alertar de un alumno y otro para alertar de un posible problema a nivel clase. Por parte de las alertas del alumno, se recibirán cuando se note un bajo rendimiento tanto en una asignatura como en el curso en general. Luego se analizará el rendimiento general de una clase por lo tanto, en caso de que baje demasiado saltará una alerta, a la vez que con el nivel de satisfacción, que en caso de que el nivel sea bajo también se podrá detectar. Por último la aplicación tendrá un calendario por curso donde los profesores introducirán sus exámenes correspondientes para que así la aplicación pueda realizar un escaneo una semana antes del mismo y así el profesor pueda ver si el alumno está preparado o no.
+
+La aplicación dispone de dos roles distintos:
+\begin{itemize}
+\item \textbf{Alumnos:} Podrá ver su seguimiento a diario y además, proveer datos al sistema de la aplicación ya que se le pedirá rellenar una encuesta semanalmente. Dicha encuesta preguntará detalles sobre el estado actual del alumno y su nivel de satisfacción en relación a las actividades lectivas.  
+
+\item \textbf{Profesores:} Podrá monitorizar sus alumnos y cuando sea el caso recibirá alarmas de alumnos que se han detectado con bajo rendimiento o que necesiten atención.
+
+  
+\end{itemize}
+

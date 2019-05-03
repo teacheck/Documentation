@@ -1,0 +1,72 @@
+% main file
+\documentclass[12pt, oneside, a4paper, openright]{book}
+\usepackage[utf8]{inputenc} % Compatibility for spanish accents
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Start Configuration %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\egilea}{Unai Agirre, Asier de La Natividad, Jon Fernandez y Lucas Sousa}
+\newcommand{\izenburua}{Teacheck - Análisis del problema}
+\newcommand{\masterDate}{03-05-2019}
+\newcommand{\masterName}{Ingenieria Informática}
+\newcommand{\masterSpecialization}{3º curso}
+
+% Comment unused languages
+%\newcommand{\documentLanguageBasque}{eu}
+\newcommand{\documentLanguageSpanish}{es}
+%\newcommand{\documentLanguageEnglish}{en}
+
+\input{template/my-packages}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%	
+%%% End configuration %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\title{\izenburua}
+\author{\egilea}
+
+
+\begin{document}
+\frontmatter
+% \maketitle
+\input{template/cover}
+\cleardoublepage
+
+
+% Remove parskip for toc
+% \setlength{\parskip}{0ex plus 0.5ex minus 0.2ex}
+\setcounter{tocdepth}{2}	% Titles level degree at table of contents
+\tableofcontents	
+
+% Change to a more spaced text-style
+\setlength{\parskip}{1.3ex plus 0.2ex minus 0.2ex}
+\renewcommand{\baselinestretch}{1.3}
+
+
+	\fancyhf{}
+	\fancyhf[OLH]{\rightmark}
+	\fancyhf[ERH]{\leftmark}
+	\fancyhf[ORH,ELH]{\thepage}
+
+\mainmatter
+
+%%%%%%%%%%%%%%%%%%%%%
+%%% Content files %%%
+%%%%%%%%%%%%%%%%%%%%%
+
+% TODO Add/modify content files as you wish
+
+\input{chapters/0-descripcionProducto}
+\input{chapters/1-mercado}
+\input{chapters/2-propuestaValor}
+\input{chapters/3-actividadesClave}
+
+\backmatter
+
+\bibliography{gap-pfg}
+
+%\cite{ensenanzaUniversitaria1}
+
+\end{document}
+% line in order to check if utf-8 is properly configured: áéíóúñ
