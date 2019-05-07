@@ -1,0 +1,82 @@
+\chapter{\introduccion}
+% \thispagestyle{empty}
+
+\paragraph{}
+Teacheck es una aplicación para realizar el seguimiento del alumnado de una universidad.
+Esta aplicación contará con un sistema para analizar el rendimiento y detectar a tiempo un deterioro del mismo. En base a esto, nuestro objetivo es que gracias a los servicios proporcionados se consiga revertir la situación y mejorar tanto el rendimiento como motivación del alumno en concreto. También queremos monitorizar todo el proceso de seguimiento para así poder aligerar la carga de trabajo del profesorado. Como último objetivo tenemos el detectar no solo que el alumno necesita un toque de atención, si no también saber cual es la raíz del problema y a su vez podremos detectar problemas a nivel de clase, esto es, si en una misma clase vemos que se dan los mismos problemas en demasiados casos, se alertará de ello para que el cliente esté al tanto y pueda buscar una solución.
+
+La solución no se centrará en mejorar cómo se imparten las clases, o en hacerle entender mejor al alumno la materia, sino en un proceso el cual analiza y monitoriza los resultados individuales de cada alumno con el fin de encontrar los posibles problemas a tiempo. Esto no quita que nuestros análisis no puedan detectar un posible problema a nivel de clase o de entendimiento del alumno, pero la solución de ese problema no será nuestra responsabilidad. No pretendemos cambiar la forma de funcionar de una institución, sino mejorarla.
+
+La aplicación web contará con un sistema distribuido que será el responsable de proveer servicios básicos a la aplicación o puede que algún servicio adicional acordado con el cliente, se implemente con el sistema. Dicho sistema estará dividido en varios microservicios que ofrecen recursos esenciales a la aplicación principal. Servicios como, Base de Datos, el proveedor de datos de la Universidad, el sistema de IA Machine Learning y como dicho antes si es de interés del cliente, se podrá amoldar a algún sistema que existe y que ya provee todos los datos de los alumnos.
+
+Teacheck, es un sistema de monitoramento que ofrecerá periódicamente análisis sobre la situación de cada alumno registrado en la universidad. Contará con el sistema de Machine Learning (Inteligencia Artificial)  para efectuar los análisis. Estos escaneos de información son específicamente predicciones en base a un modelo que ya dispone el sistema con la información inicial proporcionada por el cliente.
+
+Cada análisis traerá consigo resultados sobre cada alumno en respecto a su rendimiento en el curso correspondiente. Contaremos tanto con los datos recogidos por el profesor como con los que el alumno pueda proporcionar. Por parte del profesorado recogeremos las notas, asistencia y si el alumno hace entrega o no de los trabajos que se mandan. También tendrá como opcionales la atención, motivación y la nota del alumno en los entregables. Luego, el alumno tendrá como tarea opcional hacer un feedback rápido en el cual podrá ofrecer a la aplicación su atención en clase, motivación, asistencia y tiempo dedicado a las asignaturas fuera del horario de clase. Es a tener en cuenta que si los datos opcionales se entregan, se conseguirá un análisis mucho más preciso y eficaz, por eso son importantes unas cuantas claves que más tarde se mencionan en el apartado de actividades y recursos clave.
+
+Teacheck tendrá un sistema de alarmas que funcionará según el resultado de los análisis. Estas alarmas servirán para avisar a los profesores, vía email y aplicación, sobre un estado crítico o sobre la necesidad de darle un toque a un alumno. Entonces, si después de un análisis la aplicación detecta una de las distintas alarmas que tenemos diseñadas, las cuales se dividen en dos grupos, avisará al profesor o responsable correspondiente. Tal y como se acaba de mencionar las alarmas están divididas en dos grandes grupos, uno para alertar de un alumno y otro para alertar de un posible problema a nivel clase. Por parte de las alertas del alumno, se recibirán cuando se note un bajo rendimiento tanto en una asignatura como en el curso en general. Luego se analizará el rendimiento general de una clase por lo tanto, en caso de que baje demasiado saltará una alerta, a la vez que con el nivel de satisfacción, que en caso de que el nivel sea bajo también se podrá detectar. Por último la aplicación tendrá un calendario por curso donde los profesores introducirán sus exámenes correspondientes para que así la aplicación pueda realizar un escaneo una semana antes del mismo y así el profesor pueda ver si el alumno está preparado o no.
+
+La aplicación dispone de dos roles distintos:
+\begin{itemize}
+\item \textbf{Alumnos:} Podrá ver su seguimiento a diario y además, proveer datos al sistema de la aplicación ya que se le pedirá rellenar una encuesta semanalmente. Dicha encuesta preguntará detalles sobre el estado actual del alumno y su nivel de satisfacción en relación a las actividades lectivas.  
+
+\item \textbf{Profesores:} Podrá monitorizar sus alumnos y cuando sea el caso recibirá alarmas de alumnos que se han detectado con bajo rendimiento o que necesiten atención.
+\end{itemize}
+
+\section{\mercado}
+
+\paragraph{}
+La aplicación está dirigida a universidades que busquen hacer un seguimiento detallado de su alumnado. El usuario final del sistema, por tanto, serán tanto los diferentes grupos de profesores o coordinadores como los alumnos que se encuentren en la institución. El ámbito geográfico que pretendemos abarcar es el de nivel nacional. Tras analizar diferentes aplicaciones hemos visto que se dividen en distintas categorías:
+
+\begin{itemize}
+\item Aplicaciones con IA que ayudan a los alumnos a aprender de una manera más eficiente y efectiva.
+\begin{itemize}
+\item \textbf{Easy learning:} Kidaptive es una plataforma de enseñanza adaptativa que impulsa una variedad de dominios de aprendizaje que incluyen dos aplicaciones creadas por Kidaptive para el aprendizaje temprano. Osmo es un juego interactivo que combina aprendizaje online y experiencial.
+\end{itemize}
+\item Aplicaciones que ayudan a los profesores en la enseñanza con la ayuda de la IA.
+\begin{itemize}
+\item \textbf{Contenido:} Los proveedores de contenido premium utilizan cada vez más el aprendizaje automático para ofrecer la siguiente mejor lección. Por ejemplo, startups como Content Technologies Inc. hacen uso de machine learning para automatizar su producción y automatización de procesos de negocio, diseño instruccional y soluciones de contenido y el proceso de enseñanza. 
+\end{itemize}
+\item Aplicaciones sin IA que automatizan las actividades de monitoreo del profesor en respecto al alumnado.\cite{appsEvaluacionEstudiantes}
+\begin{itemize}
+\item \textbf{Additio:} Se trata de una herramienta versátil con muchas funcionalidades al alrededor del mundo educativo, entre ellas la capacidad de llevar un registro de notas de los estudiantes de forma muy visual, intuitiva y práctica.
+\item \textbf{TeacherKit:} Permite crear diferentes clases, cada una con sus alumnos y un sinfín de opciones para cada una de ellas. TeacherKit ayuda a llevar un registro de notas y también de asistencias y de comportamiento, con la posibilidad de exportar todos los datos para gestionarlos por su cuenta.
+\end{itemize}
+\item Aplicaciones con IA que monitorean el rendimiento de los alumnos y sacan alarmas según los diferentes objetivos:
+\begin{itemize}
+\item Aplicaciones que tienen como objetivo prevenir el abandono de alumnos en respecto a su carrera.
+\begin{itemize}
+\item \textbf{Universidad de Derby:} donde se implementó un sistema de monitoreo de la deserción estudiantil que utiliza los datos para predecir qué estudiantes tienen riesgo de dejar sus estudios, permitiéndole a la institución intervenir antes de que ello suceda.\cite{riesgoDejarEstudios}
+\end{itemize}
+\item Aplicaciones que previenen el deterioro del rendimiento del alumnado con el fin de revertir la mala situación para obtener mejores resultados.
+\begin{itemize}
+\item \textbf{Universidad Internacional de la Rioja:} Un equipo de expertos de la Universidad Internacional de La Rioja trabaja en un proyecto piloto para, gracias al uso y aplicación de la Inteligencia Artificial (IA), poder medir ,mediante algoritmos, dicho rendimiento. Se analiza el comportamiento del alumno en la plataforma, su participación en los foros, su interacción con el material de estudio, las calificaciones intermedias obtenidas en la evaluación continua… Al poder compararse con los históricos de estudiantes anteriores, se observa si existe un patrón.\cite{rendimientoAlumnos}
+\end{itemize}
+\end{itemize}
+\end{itemize}
+
+\paragraph{} Teacheck se situa en la categoría de aplicaciones que intentan prevenir el deterioro del rendimiento académico de los alumnos. Dentro de esta categoría ya existe una institución que realiza este tipo de actividad. Pero Teacheck ofrece algo más que solamente el análisis de los datos proporcionados por el profesor, también ofrece la posibilidad de que un alumno pueda proporcionar datos los cuales permitirá a la aplicación ser más precisa y eficaz.
+Ya que de esta manera, los datos introducidos por los profesores nos dirán en qué está fallando el alumno y los datos proporcionados por el alumno, cómo solucionarlo.
+
+
+\section{\propuestaValor}
+
+\paragraph{}
+Teacheck es una aplicación con el objetivo de facilitar un seguimiento en beneficio tanto del alumnado principalmente como del profesor. Con esto pretendemos resolver el problema que actualmente hay con el alto porcentaje de repetidores y suspensos. Creemos que la mayoría de estos casos suceden por falta de responsabilidad y desconocimiento de cuando el alumno va mal o su rendimiento no es el adecuado, y gran parte de estos casos son evitables. Y para dar solución a esto el primer paso es el interés del profesorado en intentar revertir esta situación y tratar de alertar al alumno de su situación, que aunque él ya sea consciente de ello en la mayoría de los casos, el hecho de recibir un aviso o consejo de forma adecuada, esto es, teniendo en cuenta cual es la manera correcta de decir y plantear los problemas, puede hacerle cambiar. Por lo tanto, para conseguir esto es necesario el seguimiento del alumno en cuestión y poder tanto ver cómo tener presente sus notas, asistencia, motivación y sus entregables entre otros. Pero aquí se nos plantea otro problema, y es que hacer el seguimiento de un alumno es fácil, pero no es lo mismo con diez alumnos, o veinte, o treinta. Entonces se complican las cosas ya que el profesor o tutor en cuestión no podrá cumplir con el seguimiento de todos y los avisos no podrán llegar a tiempo. 
+
+Pero para todo existe una solución y en este caso ofrecemos Teacheck, tal y como hemos comentado al principio, una aplicación para realizar el seguimiento del alumnado, de forma automática y precisa. El objetivo es reducir en gran parte los repetidores y suspensos para así aumentar el rendimiento de los alumnos. También vamos a poder analizar diferentes problemas que puedan surgir a nivel de clase gracias a los diferentes datos que almacenaremos. Con todo esto conseguiremos aumentar el rendimiento de las clases y en consecuencia el de la universidad en general, afectando positivamente tanto en su prestigio como en su valor como institución lo que atraerá a nuevos alumnos y empresas.
+
+\section{\actividadesClave}
+
+\paragraph{}
+Tras un análisis detallado de la institución en la que se va a desarrollar el sistema creemos que los puntos clave a la hora de implementarlo y que aportarán valor, son los siguientes:  
+ 
+\begin{itemize}
+\item \textbf{Atributos a analizar:} Se debe definir y concretar los atributos que se tendrán en cuenta en el machine learning, ya que estos serán los que en un futuro se valorarán y relacionarán entre ellos para sacar conclusiones tanto de las clases como de los alumnos.
+
+\item \textbf{Alarmas:} Las alarmas que los atributos mencionados en el punto anterior podrán llegar a generar deben ser claras y concisas, detectando así la raíz del problema a tiempo y aportando un punto de inicio a la hora de solventar el problema.
+
+\item \textbf{Informar y comunicar:} Creemos que lo primero es informar correctamente al alumno de lo que esta aplicación es y lo que le puede aportar. No es algo creado para controlarlo, si no algo que lo beneficiará si lo usa. Apenas le pide tiempo, solo unos pocos minutos a la semana y es importante que el alumno entienda esto para evitar malentendidos y descontentos. La aplicación seguirá funcionando sin sus aportaciones pero son esenciales para que este funcione al 100\%. Además de esto, también es importante una vez salte un aviso, comunicarle lo ocurrido al alumno de forma correcta, ya que si no, no conseguiremos revertir la situación tal y como queremos que suceda.
+
+\nocite{marcoPedagogico}\nocite{hezkuntzaEreduArdatzak}\nocite{metodologiaParticipativa}\nocite{aprendizajeBasadoEnProblemas}\nocite{profesorUniversitario}\nocite{modeloUniversitario}
+  
+\end{itemize}

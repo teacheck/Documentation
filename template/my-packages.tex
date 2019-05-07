@@ -168,17 +168,19 @@
 % ################################################################
 % #######     GRAPHICS                              ##############
 % ################################################################
+
 \usepackage{graphicx}
+
 \DeclareGraphicsExtensions{.png,.gif,.jpg,.pdf}
-% \graphicspath{./irudiak/}
-% \newcommand{\irudia}[3]{%
-	% \begin{figure}[htb!]
-	% \centering%
-	% \includegraphics[width=#2]{#1}
-	% \caption{#3}
-	% \label{fig:#1}
-	% \end{figure}
-% }
+\graphicspath{./figs/}
+\newcommand{\irudia}[3]{
+	 \begin{figure}[h]
+	 \centering
+	 \includegraphics[width=#2\linewidth]{#1}
+	 \caption{#3}
+	 \label{fig:#1}
+	 \end{figure}
+ }
 
 \usepackage[figuresright]{rotating}
 
@@ -520,6 +522,9 @@
 		\renewcommand{\bibname}{Bibliografía}
 		\renewcommand{\abstractname}{Resumen}
 		% Sections
+		\providecommand{\introduccion}{Introducción}
+		\providecommand{\analisisSistema}{Análisis del sistema}
+		\providecommand{\organizacionProyecto}{Organización del proyecto}
 		\providecommand{\descripcionProducto}{Descripción del producto}
 		\providecommand{\mercado}{Mercado}
 		\providecommand{\propuestaValor}{Propuesta de valor}
