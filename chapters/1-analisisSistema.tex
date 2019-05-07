@@ -116,9 +116,9 @@ Los coordinadores del curso, al igual que los profesores, también pasarán tiem
 \end{itemize}
 \section{Base de datos}
 A la hora de diseñar la base de datos hemos intentado construir un modelo que permita flexibilidad para poder adaptarnos a los distintos clientes y a sus requisitos. Para ello tenemos el siguiente modelo entidad relación.
-%\irudia{template/figs/db-Page-1.png}{2}{Base de datos}
+\irudia{template/figs/db-Page-1.png}{1}{Base de datos}
 Se puede decir que el núcleo se encuentra en la relación entre curso, alumno y asignatura, creando una relación llamada matrícula donde se registrará al alumno con sus respectivas asignatura y curso. Con esto conseguimos tener una mayor flexibilidad a la hora de posibles casos individuales que puedan afectar a un sistema más fijo sin opción a modificaciones. Luego tenemos al profesor que podrá tanto impartir una o más asignaturas y a la vez coordinar un curso. También hemos definido una entidad para poder llevar los registros históricos del feedback semanal entregado por el alumno. Por último la entidad asignatura tendrá tantos exámenes, notas de comportamiento y entregables como sean requeridos. A continuación en el modelo relacional veremos qué atributos completan cada entidad.
-%\irudia{template/figs/db-Page-2.png}{3}{Modelo relacional}
+\irudia{template/figs/db-Page-2.png}{1}{Modelo relacional}
 La relación matrícula creará una nueva entidad con las claves primarias de las entidades que crean dicha relación. Del curso se guardará su nombre, el coordinador y una breve descripción del mismo. El alumno tendrá datos personales para identificarlo y ‘repetidor’ que será un booleano para saber si no tiene las asignaturas estándar de un curso o puede que esté matriculado en más de uno. Luego la asignatura guardará los datos necesarios para identificarla, peso correspondiente en el curso y se completa tanto con los entregables, exámenes y notas de comportamiento que guardarán la fecha de cuando se registran, la competencia a la que pertenecen, y datos de identificación. Por último, para registrar los feedback de alumnado nos basta con guardar la fecha y los tres atributos recogidos en el feedback. 
 
 
