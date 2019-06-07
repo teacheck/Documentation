@@ -170,17 +170,18 @@
 % ################################################################
 
 \usepackage{graphicx}
+\usepackage{float}
 
 \DeclareGraphicsExtensions{.png,.gif,.jpg,.pdf}
 \graphicspath{./figs/}
 \newcommand{\irudia}[3]{
-	 \begin{figure}[h]
-	 \centering
-	 \includegraphics[width=#2\linewidth]{#1}
-	 \caption{#3}
-	 \label{fig:#1}
-	 \end{figure}
- }
+   \begin{figure}[H]
+   \centering
+   \includegraphics[width=#2\linewidth]{#1}
+   \caption{#3}
+   \label{fig:#1}
+   \end{figure}
+}
 
 \usepackage[figuresright]{rotating}
 

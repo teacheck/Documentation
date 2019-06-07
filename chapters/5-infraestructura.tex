@@ -124,7 +124,7 @@ Este análisis de riesgos trata de centrarse en el proceso más importante de la
 ACTIVOS
 
 La principal actividad beneficiaria para Teacheck es nuestra aplicación web. Aparte de esta última existe un sistema aún más complejo que mantiene el flujo de información actualizado y la estabilidad de la aplicación. A continuación se muestra la tabla de activos correspondientes al alcance tomado para el análisis:
-\irudia{template/figs/analisis1.png}{1}{Tabla de activos}
+\irudia{template/figs/analisis1.png}{0.9}{Tabla de activos}
 Arriba, aparte de los diversos servidores que componen nuestro sistema, las personas que lo mantienen también toman gran parte a la hora de analizar los puntos débiles del sistema. Ya que Teacheck es una empresa pequeña, la mayor parte de sus empleados son los mismos desarrolladores.
 
 \paragraph{}
@@ -146,7 +146,7 @@ Otro problema muy recurrente en aplicaciones web son los XSS (Cross-site-scripti
 tomar el control de sesión de un usuario.
 \paragraph{}
 La utilización de database IDs en URLs puede ser un problema. Un atacante puede utilizar URLs con parámetros para hacer diversas pruebas contra el backend de la aplicación con el objetivo de averiguar entidades de la base de datos, por ejemplo un usuario. Este tipo de problema ocurre cuando nuestro servicio confunde “tener una URL” con “permitido acceder a un recurso”. Los que llaman al servicio pueden tener muchas direcciones URL de rastreo, phishing o sondeo que no deberían tener el permiso para acceder a esos recursos. Si un recurso debe ser enviado a usuarios autorizados, el servicio tiene que comprobarlo en cada llamada. Aquí también puede ocurrir problemas como la fuga de información. Por ejemplo nuestro servicio responde a una llamada con “404, not found” cuando alguien pide un recurso que no existe, pero responde con un “403 not authorized” cuando el recurso existe pero el que llama no tiene permisos, esto es fuga de información.Con esta información un atacante puede deducir que recursos existen y cuales pueden ser accedidos permitiéndole hacer lo que se ha mencionado anteriormente, el sondeo.
-
+  
 \textbf{Servidores}
 \paragraph{}
 La seguridad de los servidores es muy importante ya que usualmente contienen una gran cantidad de información vital para la organización. Si un servidor está comprometido, toda la información será vulnerable a un ataque y los siguiente puntos detallan cuales son los mayores riesgos a tener en cuenta.
@@ -180,13 +180,14 @@ Como último punto analizaremos el impacto negativo que el factor humano pueda l
 \paragraph{}
 Y ya se ha mencionado en puntos anteriores que las acciones de los empleados pueden repercutir severamente en la seguridad del sistema como por ejemplo a la hora de poner las contraseñas o a la hora de llevar a cabo el mantenimiento de los servidores, lo que demuestra que el factor humano está implicado en gran número en los ciberataques.
 
+\paragraph{}
 \textbf{Tabla - Resumen Amenazas}
 \paragraph{}
 En la siguiente tabla recogemos todas las amenazas a modo de resumen asignándoles un identificador y indicando a cual de los activos afecta cada uno.
 
-\irudia{template/figs/analisis2-1.jpg}{1}{Tabla - Resumen Amenazas 1}
+\irudia{template/figs/analisis2-1.jpg}{0.8}{Tabla - Resumen Amenazas 1}
 
-\irudia{template/figs/analisis2-2.jpg}{1}{Tabla - Resumen Amenazas 2}
+\irudia{template/figs/analisis2-2.jpg}{0.8}{Tabla - Resumen Amenazas 2}
 
 \paragraph{}
 EVALUAR EL RIESGO
@@ -194,27 +195,27 @@ EVALUAR EL RIESGO
 Una vez analizados los riesgos y las medidas a tomar en cuenta, es necesario calcular el riesgo que cada una de esas amenazas supone para nuestro sistema. Para ello, estimaremos la probabilidad y el impacto de los riesgos.
 \paragraph{}
 Tabla para el cálculo de la probabilidad
-\irudia{template/figs/analisis3.jpg}{1}{Tabla para el cálculo de la probabilidad}
+\irudia{template/figs/analisis3.jpg}{0.8}{Tabla para el cálculo de la probabilidad}
 \paragraph{}
 Tabla para el cálculo del impacto
-\irudia{template/figs/analisis4.jpg}{1}{Tabla para el cálculo del impacto}
+\irudia{template/figs/analisis4.jpg}{0.8}{Tabla para el cálculo del impacto}
 \paragraph{}
 Para el cálculo del riesgo, hemos optado por hacer un análisis cualitativo, y para ello haremos uso de una matriz de riesgo.
 \paragraph{}
 Matriz de riesgo
-\irudia{template/figs/analisis5.jpg}{1}{Matriz de riesgo}
+\irudia{template/figs/analisis5.jpg}{0.8}{Matriz de riesgo}
 \paragraph{}
 \textbf{Aplicación web}
-\irudia{template/figs/analisis6.jpg}{1}{Aplicación web}
+\irudia{template/figs/analisis6.jpg}{0.8}{Aplicación web}
 \paragraph{}
 \textbf{Servidores}
-\irudia{template/figs/analisis7.jpg}{1}{Servidores}
+\irudia{template/figs/analisis7.jpg}{0.8}{Servidores}
 \paragraph{}
 \textbf{Bases de datos}
-\irudia{template/figs/analisis8.jpg}{1}{Bases de datos}
+\irudia{template/figs/analisis8.jpg}{0.8}{Bases de datos}
 \paragraph{}
 \textbf{Desarrolladores}
-\irudia{template/figs/analisis9.jpg}{1}{Desarrolladores}
+\irudia{template/figs/analisis9.jpg}{0.8}{Desarrolladores}
 
 SALVAGUARDIAS
 \paragraph{}
@@ -303,19 +304,19 @@ Una vez vistas las salvaguardas y las posibles amenazas restantes, tanto nuevas 
 
 \paragraph{}
 \textbf{Aplicación web}
-\irudia{template/figs/analisis10.jpg}{1}{Aplicación web}
+\irudia{template/figs/analisis10.jpg}{0.7}{Aplicación web}
 
 \paragraph{}
 \textbf{Servidores}
-\irudia{template/figs/analisis11.jpg}{1}{Servidores}
+\irudia{template/figs/analisis11.jpg}{0.7}{Servidores}
 
 \paragraph{}
 \textbf{Bases de datos}
-\irudia{template/figs/analisis12.jpg}{1}{Bases de datos}
+\irudia{template/figs/analisis12.jpg}{0.7}{Bases de datos}
 
 \paragraph{}
 \textbf{Desarrolladores}
-\irudia{template/figs/analisis13.jpg}{1}{Desarrolladores}
+\irudia{template/figs/analisis13.jpg}{0.7}{Desarrolladores}
 
 \paragraph{}
 SALVAGUARDIAS
