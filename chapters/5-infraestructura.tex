@@ -1,0 +1,331 @@
+\chapter{Infraestructura}
+
+\section{Introdución}
+Para servir la solución que proponemos se necesita una plataforma que pueda llevar a cabo todo el proceso mencionado en apartados anteriores. Una plataforma robusta, escalable y de alto rendimiento. Para ello la estrategia de Teacheck es separar sus distintos componentes que forman el sistema en microservicios, esto porque Teacheck apuesta por un sistema distribuido. La razón para esta decisión es la solución que queremos dar, para llegar a conseguir lo propuesto se necesitan diversos procesos que tratan de solucionar distintos problemas, y las soluciones proporcionadas por cada servicio conforman la solución final.Así pues, cada microservicio es autónomo y escalable.
+
+Por lo tanto separando estos procesos en pequeños sistemas es lo ideal para Teacheck. 
+
+Para ello se decidió dividir el sistema en cinco partes cada una de ellas representado un servicio, que son los siguientes:
+\begin{itemize}
+\item{Aplicación Web}
+\item{Servicio de acceso a datos}
+\item{Servicio de Machine Learning}
+\item{Conversor}
+\item{Servicio de mensajería}
+\end{itemize}
+
+A seguir se explicará la implementación de la infraestructura que proporciona las características de robustez, escalabilidad y resistente.
+\section{Estrategia de la infraestructura}
+
+Todos los servicios y la arquitectura del sistema Teacheck está basado en la tecnología de contenerización Docker. Como explicado en apartados anteriores Docker nos permite aislar un entorno virtual del sistema operativo hospedero permitiendo que el entorno sea independiente de plataforma. Además de que podemos crear nuestros propios entornos y desplegarlos en cualquier servidor. 
+
+Dicho esto la implementación del sistema Teacheck está pensado para el despliegue en una red de área local, en el dominio de la universidad cliente. Los requerimientos de implementación consiste en tener Docker instalado en una máquina dedicada. Teacheck se despliega utilizando el modo Swarm de docker en dicha máquina, convirtiendo esta última en un nodo gestor del Swam (Cluster).
+
+El Docker Engine instalado en cada máquina viene con un modo que puede ser activado ,dicho modo es Swarm. El objetivo de este modo es controlar de manera nativa un cluster de diversos Docker Engines que pueden estar distribuidos en distintas máquinas. Swarm orquestra y controla todos los servicios desplegados en él así como la comunicación entre nodos y la seguridad de la misma.
+
+El Swarm implementa seguridad por defecto y el intercambio de datos entre todo los nodos es encriptado y políticas de autenticidad también son aplicadas. Aparte de todos estas características Teacheck también eligió Swarm por la facilidad de como se puede escalar cada servicio.Nos permite la creación de réplicas de cada contenedor en cualquier nodo con un cambio de configuración y el redespliegue simplemente actualiza los servicio con la nueva configuración sin necesidad de parar los servicio, es decir casi no tienen downtime.
+
+Docker y el modo Swarm son temas muy extensos y están fuera del alcance de esta sección. En el apartado de manutención y monitorización se llevará a cabo un análisis más detallado de este sistema. 
+
+Dicho esto podemos hablar de cómo Teacheck ha utilizado esta tecnología para soportar su solución.
+
+Teacheck dispone de 6 microservicios en total. Cada uno de estos servicios están contenerizados y tienen su propio stack. El stack es simplemente la definición de despliegue de cada sistema, con su configuración, contenedores de soporte y configuración específica para el Swarm (el driver de internet, especificaciones de despliegue como número de réplicas, políticas de redespliegue, políticas de actualización, etc). Los contenedores de soporte le llamamos a load balancers, reverse proxies, etc. Cada servicio, con excepción del Conversor, tiene un load balancer por delante para mantener la carga de los servidores estable. Los load balancers están configurados para utilizar la estrategia de round robin a la hora de repartir la carga ya que existen múltiples réplicas de cada servicio. La configuración específica del Swarm como mencionado define políticas para el despliegue de cada sistema y del stack así como otros varios aspectos que servirán para manutención y actualización.
+Todos los servicios tiene una política de redespliegue con múltiples intentos y intervalos entre cada uno además de las políticas de actualización de contenedor que está configurado para utilizar paralelismo a la hora de actualizar las diferentes réplicas. Es decir dependiendo de cuántas réplicas de un servicio existen las actualizaciones se pueden aplicar a múltiples réplicas a la vez y no de una en una que es la configuración por defecto.
+
+Por lo tanto Teacheck tiene seis stacks diferentes que se desplegaran en la misma red virtual. Los servicios de cada stack pueden escalar a partir de la modificación de la cantidad de réplicas en la configuración y en seguida la actualización del stack en el Swarm para que se apliquen los cambios. Todo esto se puede llevar a más allá con la creación de nuevos nodos, es decir, Docker Engines que corren en otras máquinas pueden participar del Swarm donde se ubica el sistema de Teacheck. Así se forma el cluster con múltiples nodos y el Swarm tiene la capacidad de balancear los contenedores entre esos diferentes nodos. Esta capacidad viene de que cada gestor en el Swarm asigna a cada servicio un nombre DNS que permite el acceso a cualquier contenedor independiente del nodo en que este. Además del despliegue de nuevos contenedores se puede realizar en cualquier nodo del swarm.
+
+Dicho esto a seguir se explicará cada servicio que compone el sistema Teacheck.
+
+\section{Servicios}
+
+Todos los servicios de Teacheck se comunican con uno central que es el servicio de acceso a datos. Por lo tanto se explicará a seguir cada servicio por separado, incluyendo el central, y al final la composición de todos los servicios y el flujo de operación.
+
+\subsection{Conversor}
+
+Teacheck ofrece su solución a distintas instituciones y cada una de ellas ya tienen una manera predeterminada de cómo manipular sus datos y compartirlos con otros servicios. Como dicho en apartados anteriores los datos de los alumnos proporcionados por las universidades son esenciales para lograr nuestro objetivo, por lo que es necesario la obtención de dichos datos en un formato adecuado que nuestro sistema pueda entender y manipular. Teacheck no requiere a sus clientes que se adapten, en este nivel , a su sistema. Para ello ofrecemos el servicio Conversor, que tiene como objetivo servir de puente que traduce los datos que provienen del sistema de la institución a nuestro sistema. En resumen el Conversor recibirá los datos de la institución y los convertirá al formato que nuestro sistema utiliza de manera universal, que es JSON.
+
+Como hemos mencionado, puede que la universidad nos proporcione los datos de los alumnos en formato XML, por lo debemos convertir esos datos en formato JSON. Para ello, seguiremos unos pasos que se explicarán a continuación.
+
+El primer paso es crear un XSD. Un esquema XSD es un mecanismo para comprobar la validez de un documento XML, es decir, definir su estructura: qué elementos, qué tipos de datos, que atributos, en qué orden, cuántas veces se repiten, etc. Con este esquema, podremos validar todos los datos que nos lleguen en formato XML. Así, nos aseguramos que los datos no salen de sus límites establecidos en el XSD. Para la validación, existen diferentes librerías que nos ayudan como java.xml.validation.SchemaFactory, java.xml.validation.Schema, java.xml.validation.Validator, entre otras, pero estas son las que hemos utilizado. Una vez que hemos recibido el XML y lo hemos validado, no podemos pasar de un formato a otro diréctamente. Para ello, vamos a parsear los datos a Objetos de java, es decir, gracias a JAXB, podremos deserializar los XMLs en objetos Java, y, cuando terminemos, solo deberemos convertir esos objetos java en formato JSON. Para esto último, utilizaremos GSON, una librería de código abierto que nos permite la serialización de objetos Java representandolos en notación JSON.
+
+Para finalizar, solo debemos crear un cliente web y enviar el string en formato JSON al servicio de la base de datos para que él guarde estos datos en la base de datos de Teacheck.
+
+Para asegurarnos de que el cliente web del conversor funciona, se ha decidido hacer un simulador que recibe el JSON que envía el servicio conversor de formato y lo muestra en pantalla. Para ello, simplemente se ha hecho algo parecido que en el servicio anterior. Se ha implementado una API que recibe el JSON y lo muestra en la consola. Con esto, no queremos ver si el conversor a traducido bien el XML a formato JSON, sino comprobar que la comunicación entre los dos servicios se ha efectuado correctamente.
+
+\subsection{Servicio de machine learning}
+
+Para realizar el seguimiento de los alumnos semanalmente se necesita hacer un escaneo de los datos. Estos escaneos ocurren a cada semana y tienen como objetivo monitorizar el rendimiento de cada alumno. Para lograr esto se ha implementado un pequeño sistema que tiene como núcleo un programa de Machine Learning que analiza los datos recibidos y hace una predicción sobre esos datos. Los resultados de este proceso son esenciales para hacer el seguimiento del alumnado y detectar posibles deterioros en su rendimiento. 
+
+Este sistema fue diseñado solamente para recibir datos en formato y estructura específica y devolver una nueva estructura de datos con los resultados de predicciones para cada alumno y sus correlaciones. Así pues, el servicio dispone de un REST API compuesto de dos endpoints que servirán tanto para nuestro escaneo semanal como para el testeo.
+
+La estrategia de tener dos endpoints aquí es porque queremos ofrecer un servicio de machine learning que no esté atado solamente a nuestro sistema pero que también se pueda consumir por cualquier otra persona. Por un lado el servicio se comunica con el subsistema central para la ingestión de datos semanalmente con el objetivo de efectuar el escaneo y por otro lado expone un servicio que se puede consumir de manera independiente del resto del sistema.
+
+La ingestión de datos semanalmente puede ser de grande cantidad dependiendo de la institución. Cada alumno tiene una docena de campos a analizar y es costoso para el sistema que recibe esos datos enviarlos al programa núcleo de machine learning y procesar los resultados para que tenga una estructura adecuada a la hora de persistir. El programa de Machine Learning es simplemente un pequeño servidor con un único endpoint que ejecuta el proceso de predicción. Se puede decir que en un principio no haría falta otro programa por delante, sería ineficiente, pero hablamos de probablemente miles de datos y eso sería una carga muy alta para ese servicio aparte del procesamiento final de los resultados. Por esa razón el servicio de Machine Learning está dividido en dos capas, el servidor principal y el servidor de predicción que llamamos de núcleo. Por lo tanto para balancear esa carga de procesamiento el servidor principal se encarga de separar esos datos en trozos y paralelizar la petición de predicción para cada uno. Claramente no solucionamos el problema de la carga en su totalidad aun tenemos una cantidad decente de peticiones y cada una con miles de datos para procesar. Para solucionar este problema se decidió crear múltiples réplicas del núcleo y por delante del mismo ubicar un balanceador de carga. Este último utiliza la estrategia de round robin para balancear la carga. Entonces de esta manera conseguimos que todo este proceso se agilice y solucionamos el problema de la carga sobre un único servicio.
+Ahora bien, solamente podemos paralelizar los datos de diferentes asignaturas enviados al servicio, ya que nos interesa analizar la información de la clase en conjunto por las correlaciones que aparecen entre los atributos de los alumnos y la clase que se predice. Por ejemplo, si disponemos de 5 asignaturas y en cada una hay 60 alumnos, podríamos crear 5 hilos diferentes que accederán de forma simultánea al servicio núcleo de predicción. Sin embargo, no nos interesa dividir esos alumnos dentro de una misma asignatura ya que la información que sacaremos de las correlaciones sería diferente.
+
+En definitiva tendríamos el servidor principal que se ocupa de paralelizar todas las peticiones en diversos trozos y procesar los resultados de cada una, seguido de las múltiples instancias del servidor núcleo que se ocuparía de las predicciones. Después de reunir todos los resultados el servicio de ML tendría que persistir en la base de datos mediante el servicio de acceso a datos y su ciclo de operación semanal estaría completo.
+
+Una vez hemos recogido los resultados que el servicio núcleo nos proporcionará y sabemos qué alumnos tienen alarma, se deberá acceder a la información generada gracias a el análisis que se realizó del clasificador bayesiano ingenuo.
+
+Como se ha descrito en el apartado de inteligencia artifical, para saber qué atributos de un alumno en concreto han sido claves a la hora de generar la alarma es necesario acceder a los ficheros que relacionan el valor de cada atributo con un porcentaje de influencia respecto a ese atributo para un cierto valor de la clase, en este caso, “Alarma”. 
+Para ello, y sabiendo a qué semana pertenece la información relativa al alumno, se recogerá la información de dicho fichero y será almacenado. Estos información contiene por un lado, todos los posibles valores de cada atributo y, por otro lado, el porcentaje de influencia dentro de ese atributo con respecto a la clase.
+
+Así pues, una vez leída la información del fichero, se accederá a la información de un alumno en concreto y en base a sus resultados en los diferentes atributos, se relaciona con el porcentaje de influencia previamente almacenado.
+
+De esta forma, y gracias a la información que relaciona cada atributo con su peso y es ordenado de mayor a menor, seremos capaces de identificar cuáles han sido los detonantes más importantes de una alarma en concreto.
+
+El segundo endpoint como dicho antes sirve para el consumo de entidades externas al sistema. El objetivo es el mismo pero la cantidad de datos es menor con lo cual la paralelización no es necesaria. Esta parte del servicio es simplemente para testeo del servicio de predicción por parte otras entidades.
+
+\subsection{Aplicación web}
+
+La aplicación es un componente esencial para la solución final. El objetivo de la aplicación es la monitorización de todos los alumnos así como obtención de datos mediante las encuestas propuestas a los alumnos. Por lo tanto la funcionalidad principal es la visualización de datos. 
+
+Este servicio se comunica directamente con el sistema de acceso a datos para manipular los datos necesarios. El frontend de la aplicación se basa en server-side rendering con templates dinámicos. Los templates utilizan estructuras JSON para manipular los datos en la parte del frontend. Para renderizar dichos templates tiene implementado un template engine handlebars. 
+
+El servicio tiene todos sus recursos protegidos en el backend mediante autenticación y autorización por roles. La aplicación web tiene tres roles diferentes, profesores, alumnos y coordinadores. Cada una de estas entidades tienen permisos distintos para acceder a recursos y vistas distintas ya que queremos enseñar datos de monitoramento en respecto a cada rol.
+
+Para proteger los recursos de la aplicación el stack para este sistema contiene un servidor que controla la gestión de acceso y de identidad. Este último se llama Keycloak que sirve como el Identity Provider para la aplicación web. Por lo tanto la gestión de acceso a nuestra aplicación lo gestiona el IDP (identity provider). Cuando el usuario se autentica con el proveedor consignará un token que indica la autenticidad del usuario y que tiene libertad para acceder a los recursos según el rol que tenga. 
+
+En definitiva la aplicación refleja los resultados del análisis y procesamiento continuo que emplea nuestro sistema.
+
+\subsection{Servicio de mensajería}
+
+Teacheck provee un servicio adicional y que se puede implementar en cada institución, el control de asistencia. Este control de asistencia se haría mediante un dispositivo que sirve de receptor. Cada alumno al entrar en horario de clase debería pasar su tarjeta universitaria en el dispositivo que enseguida envía esos datos al servicio de mensajería de nuestro sistema que su vez persiste los datos recibidos mediante el servicio de acceso a datos. 
+
+Este servicio registra la asistencia diaria y datos sobre el alumno (identificador, nombre, etc).
+La asistencia se da por válida cuando se termina el horario clase normal. El alumno volveria pasar la tarjeta universitaria y el sistema validará la asistencia en respecto a ese dia como válida.
+
+Por lo tanto el objetivo de este servicio es simplemente hacer el registro de asistencia por alumno en nuestro sistema. Esto nos proporcionará más precisión en relación a la asistencia del alumno y mejoras en el sistema de Machine Learning.
+
+\subsection{Servicio de acceso a datos}
+
+Todos los datos manejados por el sistema está ubicado en una base de datos central que sólo es accesible a través del servicio de acceso de datos. Este servicio es el responsable de todas las transacciones a la base de datos. Dispone de una API compuesta para todos los servicios del sistema. Si algún otro servicio necesita datos tiene que pasar por este sistema.
+
+La API de este servicio está dividida en 4 partes. Cada parte está relacionada con un servicio del sistema, aplicación web, conversor, sistema de mensajería y servicio de machine learning. El sistema es totalmente asíncrono y reactivo. Ninguna acción en el sistema es bloqueante, con excepción de las migraciones iniciales a la base de datos, lo que permite que el sistema esté activo, capaz de atender y procesar todas las peticiones de los demás servicios con lo mínimo de retardo. El objetivo de este microservicio es procesar todas las transacciones y consultas que los demás servicios requieren para lograr sus propios objetivos, es un componente crucial para el funcionamiento de Teacheck.
+
+\section{Manutención y monitorización}
+
+Falta por hacer
+
+\section{Seguridad}
+
+\subsection{Introdución}
+
+Falta por hacer
+
+\subsection{Análisis de riesgos}
+
+\paragraph{}
+ALCANCE
+
+Este análisis de riesgos trata de centrarse en el proceso más importante de la empresa, en nuestro caso, el comercial. La venta de los servicios de Teacheck es lo que trae beneficio y lo que mantiene el negocio activo, por lo tanto, es de gran importancia que el alcance sea a nivel de los activos más importantes que mantienen el proceso comercial en la empresa.
+
+\paragraph{}
+ACTIVOS
+
+La principal actividad beneficiaria para Teacheck es nuestra aplicación web. Aparte de esta última existe un sistema aún más complejo que mantiene el flujo de información actualizado y la estabilidad de la aplicación. A continuación se muestra la tabla de activos correspondientes al alcance tomado para el análisis:
+\irudia{template/figs/analisis1.png}{1}{Tabla de activos}
+Arriba, aparte de los diversos servidores que componen nuestro sistema, las personas que lo mantienen también toman gran parte a la hora de analizar los puntos débiles del sistema. Ya que Teacheck es una empresa pequeña, la mayor parte de sus empleados son los mismos desarrolladores.
+
+\paragraph{}
+IDENTIFICACIÓN DE AMENAZAS
+
+\textbf{Aplicación web}
+\paragraph{}
+La aplicación web está sujeta a diversos tipos de amenazas que podrían arruinar el negocio de empresa. Pequeños detalles de implementación que pueden ser catastróficos una vez el artefacto entre en producción. Internet se ha vuelto un sitio donde la seguridad es algo indispensable si se desea mantener un negocio en marcha sin desfortunios o mantener privada la propia vida personal. Teacheck es una aplicación que trata con datos sensibles, datos de alumnos y profesores, y este es el punto principal de todo el negocio. Estos datos son esenciales para el cumplimiento de nuestros objetivos como organización. Así pues, esta primera sección se enfocará en la identificación de amenazas relacionadas con la \textbf{confidencialidad} de estos datos.
+\paragraph{}
+Los ataques de tipo SQL injection son bastante comunes en aplicaciones web. La potencial inyección de una query mal formada a la API de la aplicación puede tener resultados desastrosos, como cuenta la bien conocida historia de Little Bobby Tables. Aquí, una entrada del usuario es construida para convertir un SQL statement en más de uno. Esto consiste en la implantación del terrorífico DROP TABLES  en una query. Como se podría preveer, esto trae consecuencias inmensurables. 
+\paragraph{}
+La mala gestión de sesiones e incluso la autenticación de usuarios en la aplicación pueden acarrear diversos problemas. Para empezar los sessionID, utilizados en la parte del frontend de la aplicación pueden proporcionar problemas relacionados con la sesión del usuario. La mala gestión de las sesiones pueden causar suplantación de identidad y fraude. Si los identificadores de las sesiones son muy visibles o predecibles puede que ocurra un session hijacking, donde un atacante puede tomar el control de la sesión del usuario. Y ,a día de hoy, aún teniendo el id de la sesión embebido en una cookie, esto todavía es posible. Otro riesgo a analizar es la fijación de sesión. Un atacante puede entrar en nuestra aplicación, conseguir un identificador de sesión y pasarlo a un usuario que sin saberlo accede y se autentica en la aplicación utilizando el sessionID del atacante. Así pues, permitiendo al intruso conseguir el control sobre una cuenta activa del sistema.
+\paragraph{}
+Las credenciales de los usuarios es uno de los puntos más importantes en la seguridad de nuestra aplicación. Uno de las amenazas es el robo de credenciales. Esto puede ocurrir de varias maneras pero uno de los principales motivos es la manera como se comunica el frontend con el backend. El envío de credenciales en texto plano es uno de los problemas que pueden llegar a ocurrir. 
+\paragraph{}
+La autenticación de los usuarios también es un factor importante ya que, una vez más, lidiamos con datos sensibles. Existen diversos problemas relacionados con esto, como, por ejemplo, atacantes que intentan autenticarse diversas veces en función de averiguar credenciales o algún tipo de error que ayude a entrar en el sistema de forma no autorizada.
+\paragraph{}
+Otro problema muy recurrente en aplicaciones web son los XSS (Cross-site-scripting). Este tipo de amenaza consiste en la ejecución de código JavaScript o otro lenguaje del mismo tipo en las páginas visitadas por un usuario. Normalmente, se utiliza ese tipo de ataque para 
+tomar el control de sesión de un usuario.
+\paragraph{}
+La utilización de database IDs en URLs puede ser un problema. Un atacante puede utilizar URLs con parámetros para hacer diversas pruebas contra el backend de la aplicación con el objetivo de averiguar entidades de la base de datos, por ejemplo un usuario. Este tipo de problema ocurre cuando nuestro servicio confunde “tener una URL” con “permitido acceder a un recurso”. Los que llaman al servicio pueden tener muchas direcciones URL de rastreo, phishing o sondeo que no deberían tener el permiso para acceder a esos recursos. Si un recurso debe ser enviado a usuarios autorizados, el servicio tiene que comprobarlo en cada llamada. Aquí también puede ocurrir problemas como la fuga de información. Por ejemplo nuestro servicio responde a una llamada con “404, not found” cuando alguien pide un recurso que no existe, pero responde con un “403 not authorized” cuando el recurso existe pero el que llama no tiene permisos, esto es fuga de información.Con esta información un atacante puede deducir que recursos existen y cuales pueden ser accedidos permitiéndole hacer lo que se ha mencionado anteriormente, el sondeo.
+
+\textbf{Servidores}
+\paragraph{}
+La seguridad de los servidores es muy importante ya que usualmente contienen una gran cantidad de información vital para la organización. Si un servidor está comprometido, toda la información será vulnerable a un ataque y los siguiente puntos detallan cuales son los mayores riesgos a tener en cuenta.
+\paragraph{}
+El primer riesgo lo encontramos a la hora instalar el sistema operativo sin prestar mucha atención a todo lo que se pueda llegar a instalar. Esto puede causar que se instalen servicios por defecto que no necesitamos o deseamos, y en algunas ocasiones, que estos estén activados por defecto también. Estos pueden generar tráfico indeseado y, además de eso, pueden abrir puertos a distintas personas indeseadas con intenciones malignas. Para evitar esto, es de vital importancia cerrar puertos y desactivar servicios inutilizados.
+\paragraph{}
+La mayoría de las aplicaciones de servidores cuentan con años de experiencia en el ámbito laboral y esto les ha expuesto a incontables ataques, por lo cual, su código ha sido reforzado y se han ido corrigiendo y reparando tanto pequeñas fallas como grandes errores. Sin embargo, ningún software es perfecto, y menos cuando se trata de algo recién salido al mercado o no cuenta con la suficiente experiencia por falta de popularidad. En muchas ocasiones, tanto desarrolladores como administradores encuentran pequeños bugs en las aplicaciones y las publican en distintas páginas web destinadas a dar a conocer dichas fallas, para que de esta manera toda la comunidad esté al tanto y pueda darles una solución. Pero todo el mundo, incluido cualquier hacker, puede tener acceso a estas páginas web por lo cual están al tanto de las medidas que se toman y esto le puede llegar a dar pistas de qué pasos tomar a la hora de preparar el siguiente ataque. 
+\paragraph{}
+Una de las grandes amenazas y mayores causas de la vulnerabilidad de seguridad de los sistemas es dejarla en manos de personas poco entrenadas o no aptas para este trabajo. Esto se aplica a trabajadores nuevos o a aquellos con la insuficiente motivación o formación. Hay diferentes errores que un descuidado administrador puede cometer, y, uno de los más graves es ,por ejemplo, dejar sin modificar las llaves o contraseñas de los servicios. En muchas ocasiones después de la instalación de una base de datos, el desarrollador que lo ha instalado deja la contraseña por defecto pensando que el administrador lo cambiará, algo que no siempre ocurre, dejando una importante vulnerabilidad abierta. 
+\paragraph{}
+Otro de los mayores riesgos para un servidor ocurre cuando este se despliega en internet y la gran seguridad con la que antes contaba deja de ser tan eficaz. Pero nuestro sistema se despliega localmente lo cual nos ahorra este tipo de problemas.
+\paragraph{}
+Por último, la comunicación entre servicios tiene que ser segura ya que es importante que ningún tercero pueda interceptar un mensaje y leerlo. Al estar desplegado localmente no es un alto riesgo para nuestro sistema, pero la manera de realizar las comunicaciones es algo a tener en cuenta.
+
+\textbf{Bases de datos}
+\paragraph{}
+La base de datos es uno de los componentes más importantes de nuestro sistema. El sistema de Teacheck esta compuesto por dos bases de datos, una para toda la información de la aplicación y la otra para el servicio de IDP Keycloak. Por lo tanto, es importante analizar las posibles amenazas.
+\paragraph{}
+Uno de los problemas más básicos y que ocurre de a menudo, es la configuración errónea de estos sistemas. La configuración por defecto, contraseñas por defecto (admin / admin), etc.  Atacantes podrían entrar en el sistema fácilmente y tomar el control.
+\paragraph{}
+Los privilegios a cada individuo que tiene acceso autorizado a la base de datos tienen que ser controlados, con el fin de evitar dar más privilegios de los necesarios a las personas o programas que actúan sobre la base de datos. Ofrecer a un usuario privilegios que no son necesarios para sus acciones diarias es como abrir la puerta para un ataque eventual.
+\paragraph{}
+Las funcionalidades habilitadas innecesariamente son un problema. El sistema de la base de datos solo debe tener lo esencial para su funcionamiento y para lo que se quiere realizar a diario. Extensiones, dependencias y otros componentes no utilizados pueden causar problemas si tienen alguna vulnerabilidad debido a parches o incompatibilidades.
+También hay que tener en cuenta los desbordamientos de buffer. Permitir entradas que exceden la capacidad predeterminada de estos buffers pueden causar problemas.
+\paragraph{}
+Las actualizaciones de la base datos son importantes y la falta de esas actualizaciones tiene sus riesgos. Estas actualizaciones pueden corregir un bug, mejorar políticas de seguridad, vulnerabilidades y etc. Por lo tanto, es de extrema importancia mantener la base de datos actualizada, eso sí, como se ha comentado anteriormente, siempre analizando los posibles problemas que estas actualizaciones pueden acarrear.
+
+\textbf{Desarrolladores}
+\paragraph{}
+Como último punto analizaremos el impacto negativo que el factor humano pueda llegar a tener. Y es que a veces muchas empresas se preocupan en conseguir la mejor tecnología del mercado y se olvidan que muchos de los problemas los pueden evitar y a su vez propiciar los mismos trabajadores.
+\paragraph{}
+Y ya se ha mencionado en puntos anteriores que las acciones de los empleados pueden repercutir severamente en la seguridad del sistema como por ejemplo a la hora de poner las contraseñas o a la hora de llevar a cabo el mantenimiento de los servidores, lo que demuestra que el factor humano está implicado en gran número en los ciberataques.
+
+\textbf{Tabla - Resumen Amenazas}
+\paragraph{}
+En la siguiente tabla recogemos todas las amenazas a modo de resumen asignándoles un identificador y indicando a cual de los activos afecta cada uno.
+
+\irudia{template/figs/analisis2-1.jpg}{1}{Tabla - Resumen Amenazas 1}
+
+\irudia{template/figs/analisis2-2.jpg}{1}{Tabla - Resumen Amenazas 2}
+
+\paragraph{}
+EVALUAR EL RIESGO
+
+Una vez analizados los riesgos y las medidas a tomar en cuenta, es necesario calcular el riesgo que cada una de esas amenazas supone para nuestro sistema. Para ello, estimaremos la probabilidad y el impacto de los riesgos.
+\paragraph{}
+Tabla para el cálculo de la probabilidad
+\irudia{template/figs/analisis3.jpg}{1}{Tabla para el cálculo de la probabilidad}
+\paragraph{}
+Tabla para el cálculo del impacto
+\irudia{template/figs/analisis4.jpg}{1}{Tabla para el cálculo del impacto}
+\paragraph{}
+Para el cálculo del riesgo, hemos optado por hacer un análisis cualitativo, y para ello haremos uso de una matriz de riesgo.
+\paragraph{}
+Matriz de riesgo
+\irudia{template/figs/analisis5.jpg}{1}{Matriz de riesgo}
+\paragraph{}
+\textbf{Aplicación web}
+\irudia{template/figs/analisis6.jpg}{1}{Aplicación web}
+\paragraph{}
+\textbf{Servidores}
+\irudia{template/figs/analisis7.jpg}{1}{Servidores}
+\paragraph{}
+\textbf{Bases de datos}
+\irudia{template/figs/analisis8.jpg}{1}{Bases de datos}
+\paragraph{}
+\textbf{Desarrolladores}
+\irudia{template/figs/analisis9.jpg}{1}{Desarrolladores}
+
+SALVAGUARDIAS
+\paragraph{}
+\textbf{Aplicación web}
+
+Una vez hemos definido las posibles amenazas de nuestra aplicación, es hora de analizar qué podemos hacer para mitigar estas situaciones.
+\paragraph{}
+Hemos explicado que las inyecciones SQL eran algo común y que, hoy en día, no hay excusas para no prevenirlo con tantas librerías y buenas prácticas. Para ello, nuestro sistema principal responsable de las transacciones con la base de datos hará consultas con preparedStatments (utilizando marcadores de posición) en el caso de consultas con parámetros. De esta manera evitaremos problemas con cadenas de caracteres SQL malformadas asegurando las consultas y transacciones. Además, se debe comprobar las entradas a nuestra API porque es preferible detectar el problema en los boundaries de nuestra aplicación. Así pues, evitando que el error ocurra en alguna capa más profunda del sistema. 
+\paragraph{}
+La gestión de sesiones debe seguir algunos criterios:
+\begin{itemize}
+\item{Usar una ID de sesión larga con mucha entropía.}
+\item{Generar ID de sesión usando un generador de números pseudoaleatorios (PRNG) con buenas propiedades criptográficas.}
+\item{Cuando un usuario se autentica, hay que generar una nueva ID de sesión. De esa manera, si un ataque de fijación de sesión ocurre, el atacante no tendrá acceso a la cuenta de usuario.}
+\item{Utilizar cookies para intercambiar identificadores de sesión. No se debe aceptar ID de sesión a través de otros mecanismos, algunos servidores emitirán identificadores de sesión en las cookies pero seguirán aceptando a través de los parámetros de consulta. Deshabilitar esta última opción.}
+\end{itemize}
+\paragraph{}
+Todo tipo de datos sensibles no pueden circular en la red en texto plano. La comunicación entre el frontend y el backend debe estar encriptada. Los certificados SSL proveen este tipo de protección encriptando toda la comunicación entre cliente y servidor. La aplicación tiene por delante un reverse proxy, Nginx, los certificados deben de ser configurados para el mismo con el objetivo de redireccionar tráfico utilizando protocolo HTTP a HTTPS. Los certificados pueden ser fácilmente obtenidos con Let’s Encrypt, una autoridad conocida y que provee certificados de forma gratuita.
+\paragraph{}
+La autenticación y autorización de los usuario se hará mediante un Identity Provider. El IDP elegido es Keycloak, un sistema que realiza la gestión de acceso e identidad. Este llevará a cabo la autenticación de usuarios así como la autorización mediante roles. Dicho esto, Teacheck tiene tres roles distintos: alumno, profesor y coordinador. El flujo de autenticación se hará en base al protocolo OIDC, una extensión de OAuth 2.0. El protocolo OIDC utiliza estándares de Json Web Tokens. Esos estándares definen un Identity Token en formato JSON y maneras de cómo firmar digitalmente y encriptar esos datos. Existen dos casos de uso cuando hablamos de OIDC, nos centraremos en el primero que consiste en una petición al servidor de Keycloak para que autentique un usuario. Entonces, si el proceso de autenticación se efectúa correctamente el servidor enviará de vuelta dos tokens, Identity Token y un Access Token. El Identity Token contiene información sobre el usuario como email, nombre, etc. El Access Token es firmado por lo que Keycloak llama de realm (lo que gestiona una serie de usuarios, grupos y roles) y contiene información, como los roles, que la aplicación puede utilizar para determinar si un usuario puede acceder a un recurso o no. Aparte de acceso a recursos cada llamada a los endpoints tendrán que añadir una cabecera con su Identity Token, “Authorization Bearer <token>”, para que se pueda identificar el usuario y darle acceso a nuestra API.
+\paragraph{}
+Para evitar los XSS, como dicho anteriormente, se debe validar todas las entradas que llegan al API de la aplicación. También evitar la construcción de estructura de datos (html por ejemplo) mediante la concatenación de strings. Además existen herramientas que pueden ayudar mitigar este problema como OWASP Java Encoder. Esta librería codifica las estructuras de datos antes mencionadas. Aunque la aplicación utiliza Template Engines, que ya proporcionan su propia codificación de las estructuras HTML puede que se utilice estructura planas personalizadas en el servidor. 
+\paragraph{}
+Para evitar el acceso directo a objetos, se reducirá el valor del sondeo de URL y se comprobará la autorización a esos objetos.
+\paragraph{}
+\textbf{Servidores}
+\paragraph{}
+Una vez vistas las amenazas con las que nuestro sistema de servidores tendría que lidiar, analizaremos las medidas tomadas. 
+
+Primero debemos asegurarnos que no se instala ningún servicio que no queremos que se instale y que no queden abiertos puertos que no deben. También, a la hora de decidir que software se utilizará, se tendrá en cuenta la antigüedad y experiencia del mismo, para así asegurarnos de que ha sido utilizado por otros y tiene cierto nivel de seguridad.
+\paragraph{}
+Otro gran problema como antes hemos mencionado, es tener a cargo del mantenimiento de los servidores y de su seguridad a personas no aptas para ello. Por lo tanto, será importante mantener una formación correcta del personal, para así poder mantener la seguridad de los distintos servidores. Además de una formación inicial a un posible nuevo trabajador, habrá que seguir realizando formaciones periódicamente para así además de mantener al personal formado, también se le mantendrá motivado.
+\paragraph{}
+Por último, para poder realizar una comunicación segura entre distintos servicios, empezar hacemos uso de docker swarm, que más tarde se explica, y que básicamente encripta la comunicación entre los distintos contenedores del entorno.
+\paragraph{}
+\textbf{Bases de datos}
+
+Como el resto de todos los componentes del sistema las bases de datos estarán contenerizadas y vienen con la configuración por defecto. Toda esa configuración se puede sobrescribir a partir de ficheros de configuración pasados al contenedor. Claramente esos ficheros de configuración son datos no sensibles, como puertos, hostname, nombre de la base de datos , etc. Para datos sensibles hay que utilizar la funcionalidad del entorno en el cual se despliega todos los servicios, Docker swarm. El modo swarm de Docker permite la gestión centralizada de secrets (password, certificados TLS, claves SSH, etc). Con el swarm podemos garantizar que container tiene acceso a qué secrets y en el intercambio son encriptadas así como cuando están guardadas en el swarm. Por lo tanto toda configuración sensible debe utilizar la funcionalidad por defecto de Docker Swarm y la configuración no sensible por variables de entorno o ficheros de configuración.
+\paragraph{}
+Se debe evitar los privilegios innecesarios. Todos los usuarios tienen que disponer solamente de privilegios necesarios para efectuar sus tareas. La clasificación de estos privilegios deben de ser registrados en el perfil de cada usuario teniendo en cuenta la frecuencia de operación de cada tarea. Una vez algún privilegio se vuelva innecesario para un usuario se debe retirar dicho privilegio.
+\paragraph{}
+En relación a dependencias de las bases de datos es importante mantener solamente lo necesario. Funcionalidades que no se utilizan deben ser desinstaladas.
+
+La actualización de las bases de datos en el caso de un entorno en Swarm consiste en la actualización de la imagen del contenedor. Cómo utilizamos las imágenes oficiales de PostgreSQL para cada base de datos, cada una son mantenidas y actualizadas periódicamente por el desarrollador oficial. Para actualizar hay que tener en cuenta las vulnerabilidades de las imágenes. Estas vulnerabilidades se pueden ver en el repositorio oficial de PostgreSQL en Docker Hub, analizar y validar la posible actualización de la imagen del contenedor en el Swam.
+\paragraph{}
+\textbf{Desarrolladores}
+
+En cuanto al personal de la empresa, hemos visto que gran parte de los ciberataques se producen debido a una falta de responsabilidad por parte de los mismos. Para evitar este tipo de situaciones, se tomarán dos medidas al respecto, la primera, informar y concienciar a los trabajadores de la importancia de su responsabilidad y toma de decisiones para la seguridad de la empresa.Y la segunda, tratar de establecer medidas predeterminadas y hacer uso de la inteligencia artificial para que de esta manera, se libre en la medida de lo posible al trabajador de tomar decisiones en cuanto a la seguridad.
+
+Por ejemplo, se hará uso de una aplicación para monitorizar contraseñas, haciendo de esta manera que se actualicen solas.
+\paragraph{}
+TRATAR EL RIESGO
+\paragraph{}
+A la hora de tratar los riesgos, se dará prioridad a aquellos más graves, pero se intentará dar solución a todos. La táctica a seguir será implantar medidas de seguridad para dar solución a los riesgos que puedan aparecer. Se ha decidido tomar este camino debido a que la aplicación se instala localmente, no tiene un uso continuo y se conoce cuando se está usando. Por lo tanto, se realizará una copia semanal de la base de datos para así no perder ningún dato y el sistema se apagará en caso de que haya algún riesgo y teniendo en cuenta un par de criterios. El primero de esos criterios es ver si el riesgo impide el correcto funcionamiento del sistema, y el segundo si el riesgo es “medio” o superior.
+
+A su vez, será importante una correcta monitorización de los riesgos, ya que se pueden repetir a lo largo del tiempo.
+
+\subsection{Análisis de riesgos residual}
+
+Una vez realizado el analizadas las amenazas y sus respectivos salvaguardas, pasaremos a analizar las posibles nuevas amenazas generadas a la hora de implementar los salvaguardas. También cabe la posibilidad de que alguna de las amenazas siga sin estar solucionada o controlada del todo.
+\paragraph{}
+IDENTIFICACIÓN DE AMENAZAS
+
+\textbf{Aplicación web}
+\paragraph{}
+Comenzando con la aplicación web, una de la soluciones implementadas consiste en encriptar la comunicación entre el frontend y el backend. Desencriptar dicha comunicación no es tarea fácil, pero sigue siendo una amenaza a considerar, ya que los algoritmos de encriptación pueden llegar a ser predecibles con el paso del tiempo.
+\paragraph{}
+Además, la mencionada encriptación se lleva a cabo mediante certificados de seguridad SSL. Estos certificados tiene una fecha de caducidad, por lo cual si no se tiene un sistema automático que controle dicha fecha de caducidad, podría pasar la fecha y dejar de tener una comunicación encriptada.
+\paragraph{}
+Por último, una de las herramientas de software libre implementadas es keycloak. Y una de las preguntas que surge es el que ocurriría en caso de que algún hacker consiguiera encontrar alguna vulnerabilidad en el código de keycloak. Obviamente esto amenazaría directamente a nuestro sistema.
+\paragraph{}
+\textbf{Bases de datos}
+\paragraph{}
+La asignación de los privilegios es importante para el correcto funcionamiento del sistema, y a su vez para que el sistema sea seguro. Dicho esto, en el anterior análisis se especificaba que era importante no asignar privilegios a quien no los necesitaba y que debido a eso se regularía el entregar privilegios. Pero algo que no se contempló fue el no darle a alguien o algo el privilegio que necesita para desempeñar su tarea, ya que si por ejemplo alguna funcionalidad o servicio necesita algún privilegio para su correcto funcionamiento y se le deniega dicho privilegio, el sistema entero podría dejar de funcionar.
+\paragraph{}
+Otro de los problemas era el no llevar las actualizaciones al día, y por ello decidimos automatizar el proceso. Esto crea otra amenaza ya que las actualizaciones pueden traer consigo posibles vulnerabilidades que podrían amenazar a nuestro sistema.
+\paragraph{}
+\textbf{Desarrolladores}
+\paragraph{}
+Tal y como se ha mencionado en el análisis de riesgos anterior, el factor humano es uno de las posibles amenazas de sistema, y aunque se intente dar una solución formando a los trabajadores, o sustituyendo las decisiones de los mismos, mientras haya personas trabajando, el factor humano seguirá existiendo. Por lo tanto, se puede disminuir la probabilidad del riesgo, pero no hacerlo desaparecer.
+\paragraph{}
+EVALUAR EL RIESGO
+\paragraph{}
+Una vez vistas las salvaguardas y las posibles amenazas restantes, tanto nuevas como las que no se han conseguido mitigar del todo, volvemos a analizar el riesgo de las mismas.
+
+
+\paragraph{}
+\textbf{Aplicación web}
+\irudia{template/figs/analisis10.jpg}{1}{Aplicación web}
+
+\paragraph{}
+\textbf{Servidores}
+\irudia{template/figs/analisis11.jpg}{1}{Servidores}
+
+\paragraph{}
+\textbf{Bases de datos}
+\irudia{template/figs/analisis12.jpg}{1}{Bases de datos}
+
+\paragraph{}
+\textbf{Desarrolladores}
+\irudia{template/figs/analisis13.jpg}{1}{Desarrolladores}
+
+\paragraph{}
+SALVAGUARDIAS
+
+\paragraph{}
+\textbf{Aplicación web}
+
+De las nuevas amenazas solo podemos solucionar el relativo a los certificados, automatizando las actualizaciones de dichos certificados.
+\paragraph{}
+\textbf{Servidores}
+
+Respecto a la base de datos, viendo que la asignación y control de los privilegios es importante, se le da la importancia y atención que se merece.
+

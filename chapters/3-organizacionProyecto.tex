@@ -15,33 +15,40 @@ También usaremos maven y vertx, un framework  que nos permite desplegar microse
 Por último haremos una reunión semanal con nuestro tutor para asegurar que seguimos un rumbo correcto.
 
 \section{Entorno de Desarrollo}
-\paragraph{}
 
 \subsection{Entorno Virtual de Desarrollo Docker}
+
 \paragraph{}
-El entorno de desarrollo de la aplicación debe de ser uniforme para todos los desarrolladores. Es una tarea difícil ya que siempre hay diferencias de sistemas operativos y cada máquina es unica. Pero hay una solución que Teacheck utilizará tanto para el entorno de desarrollo como para el de producción y servidor de testeo, Docker.
+El entorno de desarrollo de la aplicación debe ser uniforme para todos los desarrolladores. Es una tarea difícil ya que siempre hay diferencias de sistemas operativos y cada máquina es unica. Pero hay una solución que Teacheck utilizará tanto para el entorno de desarrollo como para el de producción y servidor de testeo, Docker.
 
 \paragraph{}
 Docker es una herramienta que permite la “contenerización” de sistemas completos (una especie de virtual machine aunque no lo es). Los containers (así llamados dichos sistemas) creados por Docker se comunican directamente con el kernel del sistema operativo. Eso permite que un entorno sea el mismo en cualquier otra máquina independiente de su sistema.
 
 \paragraph{}
-Dicho esto el valor que nos aportará Docker es el entorno uniforme entre todos los desarrolladores así como el entorno de producción y testeo. Además de facilitar las dependencias de desarrollo como base de datos para testeo por ejemplo. Docker permite desplegar entornos completos sin tener que instalar software adicional.
+Dicho esto el valor que nos aporta Docker es el entorno uniforme entre todos los desarrolladores así como el entorno de producción y testeo. Además de facilitar las dependencias de desarrollo como base de datos para testeo por ejemplo. Docker permite desplegar entornos completos sin tener que instalar software adicional.
 
 \paragraph{}
-El entorno funcionará con una serie de containers desplegados en una red virtual de Docker con toda la configuración necesaria para que funcionen correctamente. Para ese múltiple despliegue y comunicación entre esos containers en una red virtual se utilizará una extensión de Docker, docker-compose. La idea por detrás de esta herramienta es básicamente automatizar ciertos aspectos de Docker para que sea más productivo. La herramienta docker-compose tiene la capacidad de desplegar un entorno compuesto de varios containers dentro de una red virtual donde puedan comunicarse entre sí. Se podría hacer lo mismo utilizando solamente Docker pero sería algo muy manual y con altas probabilidades de error.
+El entorno funciona con una serie de containers desplegados en una red virtual de Docker con toda la configuración necesaria para que funcionen correctamente. Para ese múltiple despliegue y comunicación entre esos containers en una red virtual se utiliza una extensión de Docker, docker-compose. La idea por detrás de esta herramienta es simplemente automatizar ciertos aspectos de Docker para que sea más productivo. La herramienta docker-compose tiene la capacidad de desplegar un entorno compuesto de varios containers dentro de una red virtual donde pueden comunicarse entre sí. Se podría hacer lo mismo utilizando solamente Docker pero sería algo muy manual y con altas probabilidades de error.
 
 \paragraph{}
-Entrando en más detalles sobre qué contenedores se utilizarán, primero está el de la aplicación. Este contenedor es un sistema operativo basado en Alpine Linux y tendrá Maven con la versión más reciente y además con la versión 8 del openjdk de Java. En este sistema se ubicará todo el código en una carpeta “/app”. Esta carpeta estará mapeada al sistema del host, es decir, el sistema operativo que hospeda el contenedor. Dicha carpeta recibirá los cambios hechos en el host y así el contenedor puede seguir actualizado con cada nueva iteración con el código. Esto nos permite que todo tipo comando de Maven, por ejemplo los builds y testeos,  se ejecuten dentro de ese sistema, totalmente aislado del sistema host.
+Por lo tanto el desarrollo de todo los servicios y componentes que componen el sistema de Teacheck utiliza esta herramienta. Cada componente tiene su desarrollo separado de los demás ya que cada uno es un subsistema independiente. A seguir se detalla el entorno de desarrollo de la aplicación web, un ejemplo de cómo se lleva a cabo la configuración y despliegue de un entorno. Los entornos de los demás subsistemas sólo se diferencian en la configuración pero la metodología es la misma. 
+
+\paragraph{}
+El contenedor de la aplicación web. Este contenedor es un sistema operativo basado en Alpine Linux y tendrá Maven con la versión más reciente y además con la versión 8 del openjdk de Java. En este sistema se ubicará todo el código en una carpeta “/app”. Esta carpeta estará mapeada al sistema del host, es decir, el sistema operativo que hospeda el contenedor. Dicha carpeta recibirá los cambios hechos en el host y así el contenedor se actualiza con cada nueva iteración en el código. Esto nos permite que todo tipo comando de Maven, por ejemplo los builds y testeos,  se ejecuten dentro de ese sistema, totalmente aislado del sistema host.
 Para llevar a cabo la productividad aun más todavía el contenedor ejecutara un bash script para mantener la aplicación en marcha “escuchando” cualquier cambio en el código. Si algún cambio ocurre el script desplegará la aplicación otra vez con el código fuente actualizado. En realidad el contenedor de la aplicación morería si no fuera por el script ya que los contenedores de Docker solo viven hasta que el comando que lo inicializo termina su ejecución.Por eso el sistema del contenedor al inicializarse ejecutar dicho script para arrancar la aplicación, la cual a su vez pone en marcha un servidor HTTP escuchando en el puerto 8080 del contenedor.
 
 \paragraph{}
-El siguiente contenedor es la base de datos. La base de datos, en este caso PostgreSQL, también correrá en un sistema operativo Linux. Simplemente para testeo durante el desarrollo.Se utilizará la configuración por defecto del contenedor y algunas variables de entorno adicionales para declarar el nombre de la base datos y la contraseña. Esto es por un concepto muy importante en respecto a los contenedores de Docker. Todos los contenedores son efímeros. Una vez el entorno es terminado todos cambios hechos al contenedor son borrados y si se intenta desplegar el entorno una vez más este último tendría la configuración por defecto. Por lo que permite que se cometan errores ya que si algo crítico ocurre con la base de datos por ejemplo, con simplemente terminar y desplegar otra vez el contenedor se solucionaría el problema.
+El siguiente contenedor es la base de datos. La base de datos, en este caso PostgreSQL, también correrá en un sistema operativo Linux. Simplemente para testeo durante el desarrollo.Se utilizará la configuración por defecto del contenedor y algunas variables de entorno adicionales para declarar el nombre de la base datos y la contraseña. Esto es por un concepto muy importante en respecto a los contenedores de Docker. Todos los contenedores son efímeros, una vez que el entorno  es terminado todos los cambios hechos al contenedor son borrados y si se intenta desplegar el entorno una vez más pero este último tendría la configuración por defecto. Por lo que permite que se cometan errores ya que si algo crítico ocurre con la base de datos por ejemplo, con simplemente terminar y desplegar otra vez el contenedor se solucionaría el problema.
+
+\paragraph{}
+Existen otros dos contenedores, Nginx y Keycloak, el primero es un reverse proxy para la aplicación web y el segundo es un Identity Provider (IDP) para gestionar el control de acceso y entidades para la aplicación. Utilizan configuraciones por defecto recomendadas para el desarrollo.
 
 \paragraph{}
 Todo esto es transparente para el desarrollo una vez el proceso de configuración del entorno esté completa, lo que se hace una vez al principio de un nuevo proyecto. En el decorrer del desarrollo de la aplicación el desarrollador solo utilizará dos comandos básicos para el despliegue y visualización de los logs de cada contenedor si así se desea.
 
 Esta sería la definición del entorno de desarrollo para ejecución con docker-compose:
-\irudia{template/figs/docker-compose.png}{1}{Descripción del Entorno de Desarrollo}
+
+\irudia{template/figs/docker.jpg}{1}{Esquema del entorno con los diferentes contenedores que son necesarios para llevar a cabo el desarrollo de la aplicación}
 
 \paragraph{}
 Aquí un pequeño esquema del entorno con los diferentes contenedores que son necesarios para llevar a cabo el desarrollo de la aplicación.
@@ -50,24 +57,25 @@ Aquí un pequeño esquema del entorno con los diferentes contenedores que son ne
 \subsection{Control de Versiones}
 \paragraph{}
 Cada proyecto de desarrollo de software tiene que mantener un control de las versiones del producto. El control de versiones es muy importante y conveniente para los desarrolladores.
-Teacheck utilizará Git.
+Teacheck utilizará Git. 
 
 \paragraph{}
 Git es uno de los sistemas más populares en el mundo para el control de versiones. Es distribuido por lo que nos da la capacidad de que cada desarrollador tenga un clon del repositorio completo en su propia máquina. También se utilizará la plataforma en la nube central de Git, GitHub. Allí se ubicará el repositorio remoto de la aplicación donde se subirán los cambios periódicamente al código.
 
 \paragraph{}
 La organización entre los desarrolladores es muy importante a la hora de llevar a cabo la construcción de un sistema. GitHub proporciona un sistema de issues donde permite crear diferentes tareas relacionadas al repositorio. Cada issue tiene un identificador y se le puede añadir documentación, comentarios y asignarlas a colaboradores del proyecto. Teniendo en cuenta este sistema se plantea el siguiente ciclo de desarrollo para nuevas iteraciones:
+
 \begin{itemize}
 \item
   Para cada nueva iteración a desarrollar se debe crear un nuevo issue y escribir una dedicada documentación sobre lo que se quiere hacer.
 \item
   Asignarlas a los responsables de la tarea
 \item
-  Si necesario determinar qué tipo de issue es:
+  Si es necesario determinar qué tipo de issue es:
   \begin{itemize}
   \item
     Enhancement
-  \item
+  \item	
     Bug
   \item
     Task
@@ -112,8 +120,7 @@ Teacheck utilizará Doxygen, que es la de facto herramienta estándar para gener
 Uno de los puntos importantes cuando se trata del desarrollo de software es asegurar que todo el análisis en respecto al código sea realizado. Ese análisis está compuesto de diversas operaciones que verifican calidad del código producido. Esas operaciones son los tests unitarios, el build, formatos, distribución del código y etc. Con integración continua se puede asegurar que a cada push de cambios al repositorio remoto pase por el sistema de control de calidad del código. El valor que aporta este proceso es evidente y además de ser un sistema automatizado. Mantener el flujo de desarrollo eficiente, productivo y al mismo tiempo asegurando la calidad del producto en desarrollo.
 
 \paragraph{}
-Para ello se decidió utilizar un sistema de integración continua. Existen muchos sistemas, pero el elegido es Travis CI por su facilidad de integración con GitHub y empleo
-.
+Para ello se decidió utilizar un sistema de integración continua. Existen muchos sistemas, pero el elegido es Travis CI por su facilidad de integración con GitHub y empleo.
 \begin{figure}
   \includegraphics[scale=0.5]{haha}
   \irudia{template/figs/pipeline-example.png}{1}{Pipeline status example}
