@@ -4,70 +4,174 @@
 \paragraph{}
 \section{Planning Inicial}
 \paragraph{}
-Antes de empezar a programar hemos decidido tanto pensar cómo planificar cómo vamos a trabajar estas semanas.
+Antes de empezar a programar hemos decidido tanto pensar cómo
+planificar cómo vamos a trabajar estas semanas.
 
-Para comenzar hemos decidido utilizar Github. Primero para poder codificar y desarrollar distintas partes del proyecto de manera ordenada. No crearemos diferentes ramas sino que haremos uso de las “Issues” que nos facilitan saber que se ha cambiado o creado en cada commit que vayamos a ejecutar. También usaremos Github para organizar las diferentes tareas que tenemos que llevar a cabo, haciendo uso de su ‘Github project board’. Aquí se podrán visualizar las distintas tareas que se tienen que hacer, están en desarrollo y se encuentran ya acabadas.
+Para comenzar hemos decidido utilizar Github. Primero para poder
+codificar y desarrollar distintas partes del proyecto de manera
+ordenada. No crearemos diferentes ramas sino que haremos uso de las
+“Issues” que nos facilitan saber que se ha cambiado o creado en cada
+commit que vayamos a ejecutar. También usaremos Github para organizar
+las diferentes tareas que tenemos que llevar a cabo, haciendo uso de
+su ‘Github project board’. Aquí se podrán visualizar las distintas
+tareas que se tienen que hacer, están en desarrollo y se encuentran ya
+acabadas.
 
-Luego haremos uso de docker que permite que una aplicación y todas sus dependencias se empaqueten en un contenedor y puedan ejecutarse sin tener en cuenta el sistema operativo de la máquina en la que se encuentra el docker. De esta manera evitaremos el tan conocido problema de que alguien tenga problemas al ejecutar algo desarrollado en otra máquina.
+Luego haremos uso de docker que permite que una aplicación y todas sus
+dependencias se empaqueten en un contenedor y puedan ejecutarse sin
+tener en cuenta el sistema operativo de la máquina en la que se
+encuentra el docker. De esta manera evitaremos el tan conocido
+problema de que alguien tenga problemas al ejecutar algo desarrollado
+en otra máquina.
 
-También usaremos maven y vertx, un framework  que nos permite desplegar microservicios apoyándose en programación reactiva. Lo hemos elegido tras hacer varias pruebas y ver lo sencillo que era su uso.
+También usaremos maven y vertx, un framework que nos permite desplegar
+microservicios apoyándose en programación reactiva. Lo hemos elegido
+tras hacer varias pruebas y ver lo sencillo que era su uso.
 
-Por último haremos una reunión semanal con nuestro tutor para asegurar que seguimos un rumbo correcto.
+Por último haremos una reunión semanal con nuestro tutor para asegurar
+que seguimos un rumbo correcto.
 
 \section{Entorno de Desarrollo}
 
 \subsection{Entorno Virtual de Desarrollo Docker}
 
 \paragraph{}
-El entorno de desarrollo de la aplicación debe ser uniforme para todos los desarrolladores. Es una tarea difícil ya que siempre hay diferencias de sistemas operativos y cada máquina es unica. Pero hay una solución que Teacheck utilizará tanto para el entorno de desarrollo como para el de producción y servidor de testeo, Docker.
+El entorno de desarrollo de la aplicación debe ser uniforme para todos
+los desarrolladores. Es una tarea difícil ya que siempre hay
+diferencias de sistemas operativos y cada máquina es unica. Pero hay
+una solución que Teacheck utilizará tanto para el entorno de
+desarrollo como para el de producción y servidor de testeo, Docker.
 
 \paragraph{}
-Docker es una herramienta que permite la “contenerización” de sistemas completos (una especie de virtual machine aunque no lo es). Los containers (así llamados dichos sistemas) creados por Docker se comunican directamente con el kernel del sistema operativo. Eso permite que un entorno sea el mismo en cualquier otra máquina independiente de su sistema.
+Docker es una herramienta que permite la “contenerización” de sistemas
+completos (una especie de virtual machine aunque no lo es). Los
+containers (así llamados dichos sistemas) creados por Docker se
+comunican directamente con el kernel del sistema operativo. Eso
+permite que un entorno sea el mismo en cualquier otra máquina
+independiente de su sistema.
 
 \paragraph{}
-Dicho esto el valor que nos aporta Docker es el entorno uniforme entre todos los desarrolladores así como el entorno de producción y testeo. Además de facilitar las dependencias de desarrollo como base de datos para testeo por ejemplo. Docker permite desplegar entornos completos sin tener que instalar software adicional.
+Dicho esto el valor que nos aporta Docker es el entorno uniforme entre
+todos los desarrolladores así como el entorno de producción y
+testeo. Además de facilitar las dependencias de desarrollo como base
+de datos para testeo por ejemplo. Docker permite desplegar entornos
+completos sin tener que instalar software adicional.
 
 \paragraph{}
-El entorno funciona con una serie de containers desplegados en una red virtual de Docker con toda la configuración necesaria para que funcionen correctamente. Para ese múltiple despliegue y comunicación entre esos containers en una red virtual se utiliza una extensión de Docker, docker-compose. La idea por detrás de esta herramienta es simplemente automatizar ciertos aspectos de Docker para que sea más productivo. La herramienta docker-compose tiene la capacidad de desplegar un entorno compuesto de varios containers dentro de una red virtual donde pueden comunicarse entre sí. Se podría hacer lo mismo utilizando solamente Docker pero sería algo muy manual y con altas probabilidades de error.
+El entorno funciona con una serie de containers desplegados en una red
+virtual de Docker con toda la configuración necesaria para que
+funcionen correctamente. Para ese múltiple despliegue y comunicación
+entre esos containers en una red virtual se utiliza una extensión de
+Docker, docker-compose. La idea por detrás de esta herramienta es
+simplemente automatizar ciertos aspectos de Docker para que sea más
+productivo. La herramienta docker-compose tiene la capacidad de
+desplegar un entorno compuesto de varios containers dentro de una red
+virtual donde pueden comunicarse entre sí. Se podría hacer lo mismo
+utilizando solamente Docker pero sería algo muy manual y con altas
+probabilidades de error.
 
 \paragraph{}
-Por lo tanto el desarrollo de todo los servicios y componentes que componen el sistema de Teacheck utiliza esta herramienta. Cada componente tiene su desarrollo separado de los demás ya que cada uno es un subsistema independiente. A seguir se detalla el entorno de desarrollo de la aplicación web, un ejemplo de cómo se lleva a cabo la configuración y despliegue de un entorno. Los entornos de los demás subsistemas sólo se diferencian en la configuración pero la metodología es la misma. 
+Por lo tanto el desarrollo de todo los servicios y componentes que
+componen el sistema de Teacheck utiliza esta herramienta. Cada
+componente tiene su desarrollo separado de los demás ya que cada uno
+es un subsistema independiente. A seguir se detalla el entorno de
+desarrollo de la aplicación web, un ejemplo de cómo se lleva a cabo la
+configuración y despliegue de un entorno. Los entornos de los demás
+subsistemas sólo se diferencian en la configuración pero la
+metodología es la misma.
 
 \paragraph{}
-El contenedor de la aplicación web. Este contenedor es un sistema operativo basado en Alpine Linux y tendrá Maven con la versión más reciente y además con la versión 8 del openjdk de Java. En este sistema se ubicará todo el código en una carpeta “/app”. Esta carpeta estará mapeada al sistema del host, es decir, el sistema operativo que hospeda el contenedor. Dicha carpeta recibirá los cambios hechos en el host y así el contenedor se actualiza con cada nueva iteración en el código. Esto nos permite que todo tipo comando de Maven, por ejemplo los builds y testeos,  se ejecuten dentro de ese sistema, totalmente aislado del sistema host.
-Para llevar a cabo la productividad aun más todavía el contenedor ejecutara un bash script para mantener la aplicación en marcha “escuchando” cualquier cambio en el código. Si algún cambio ocurre el script desplegará la aplicación otra vez con el código fuente actualizado. En realidad el contenedor de la aplicación morería si no fuera por el script ya que los contenedores de Docker solo viven hasta que el comando que lo inicializo termina su ejecución.Por eso el sistema del contenedor al inicializarse ejecutar dicho script para arrancar la aplicación, la cual a su vez pone en marcha un servidor HTTP escuchando en el puerto 8080 del contenedor.
+El contenedor de la aplicación web. Este contenedor es un sistema
+operativo basado en Alpine Linux y tendrá Maven con la versión más
+reciente y además con la versión 8 del openjdk de Java. En este
+sistema se ubicará todo el código en una carpeta “/app”. Esta carpeta
+estará mapeada al sistema del host, es decir, el sistema operativo que
+hospeda el contenedor. Dicha carpeta recibirá los cambios hechos en el
+host y así el contenedor se actualiza con cada nueva iteración en el
+código. Esto nos permite que todo tipo comando de Maven, por ejemplo
+los builds y testeos, se ejecuten dentro de ese sistema, totalmente
+aislado del sistema host.  Para llevar a cabo la productividad aun más
+todavía el contenedor ejecutara un bash script para mantener la
+aplicación en marcha “escuchando” cualquier cambio en el código. Si
+algún cambio ocurre el script desplegará la aplicación otra vez con el
+código fuente actualizado. En realidad el contenedor de la aplicación
+morería si no fuera por el script ya que los contenedores de Docker
+solo viven hasta que el comando que lo inicializo termina su
+ejecución.Por eso el sistema del contenedor al inicializarse ejecutar
+dicho script para arrancar la aplicación, la cual a su vez pone en
+marcha un servidor HTTP escuchando en el puerto 8080 del contenedor.
 
 \paragraph{}
-El siguiente contenedor es la base de datos. La base de datos, en este caso PostgreSQL, también correrá en un sistema operativo Linux. Simplemente para testeo durante el desarrollo.Se utilizará la configuración por defecto del contenedor y algunas variables de entorno adicionales para declarar el nombre de la base datos y la contraseña. Esto es por un concepto muy importante en respecto a los contenedores de Docker. Todos los contenedores son efímeros, una vez que el entorno  es terminado todos los cambios hechos al contenedor son borrados y si se intenta desplegar el entorno una vez más pero este último tendría la configuración por defecto. Por lo que permite que se cometan errores ya que si algo crítico ocurre con la base de datos por ejemplo, con simplemente terminar y desplegar otra vez el contenedor se solucionaría el problema.
+El siguiente contenedor es la base de datos. La base de datos, en este
+caso PostgreSQL, también correrá en un sistema operativo
+Linux. Simplemente para testeo durante el desarrollo.Se utilizará la
+configuración por defecto del contenedor y algunas variables de
+entorno adicionales para declarar el nombre de la base datos y la
+contraseña. Esto es por un concepto muy importante en respecto a los
+contenedores de Docker. Todos los contenedores son efímeros, una vez
+que el entorno es terminado todos los cambios hechos al contenedor son
+borrados y si se intenta desplegar el entorno una vez más pero este
+último tendría la configuración por defecto. Por lo que permite que se
+cometan errores ya que si algo crítico ocurre con la base de datos por
+ejemplo, con simplemente terminar y desplegar otra vez el contenedor
+se solucionaría el problema.
 
 \paragraph{}
-Existen otros dos contenedores, Nginx y Keycloak, el primero es un reverse proxy para la aplicación web y el segundo es un Identity Provider (IDP) para gestionar el control de acceso y entidades para la aplicación. Utilizan configuraciones por defecto recomendadas para el desarrollo.
+Existen otros dos contenedores, Nginx y Keycloak, el primero es un
+reverse proxy para la aplicación web y el segundo es un Identity
+Provider (IDP) para gestionar el control de acceso y entidades para la
+aplicación. Utilizan configuraciones por defecto recomendadas para el
+desarrollo.
 
 \paragraph{}
-Todo esto es transparente para el desarrollo una vez el proceso de configuración del entorno esté completa, lo que se hace una vez al principio de un nuevo proyecto. En el decorrer del desarrollo de la aplicación el desarrollador solo utilizará dos comandos básicos para el despliegue y visualización de los logs de cada contenedor si así se desea.
+Todo esto es transparente para el desarrollo una vez el proceso de
+configuración del entorno esté completa, lo que se hace una vez al
+principio de un nuevo proyecto. En el decorrer del desarrollo de la
+aplicación el desarrollador solo utilizará dos comandos básicos para
+el despliegue y visualización de los logs de cada contenedor si así se
+desea.
 
-Esta sería la definición del entorno de desarrollo para ejecución con docker-compose:
+Esta sería la definición del entorno de desarrollo para ejecución con
+docker-compose:
 
-\irudia{template/figs/docker.jpg}{0.5}{Esquema del entorno con los diferentes contenedores que son necesarios para llevar a cabo el desarrollo de la aplicación}
+\irudia{template/figs/docker.jpg}{0.5}{Esquema del entorno con los
+  diferentes contenedores que son necesarios para llevar a cabo el
+  desarrollo de la aplicación}
 
 \paragraph{}
-Aquí un pequeño esquema del entorno con los diferentes contenedores que son necesarios para llevar a cabo el desarrollo de la aplicación.
-\irudia{template/figs/dev-env.png}{1}{Entorno de Desarrollo en contenedores}
+Aquí un pequeño esquema del entorno con los diferentes contenedores
+que son necesarios para llevar a cabo el desarrollo de la aplicación.
+\irudia{template/figs/EntornoDesarrollo.png}{1}{Entorno de Desarrollo en
+  contenedores}
 
 \subsection{Control de Versiones}
 \paragraph{}
-Cada proyecto de desarrollo de software tiene que mantener un control de las versiones del producto. El control de versiones es muy importante y conveniente para los desarrolladores.
-Teacheck utilizará Git. 
+Cada proyecto de desarrollo de software tiene que mantener un control
+de las versiones del producto. El control de versiones es muy
+importante y conveniente para los desarrolladores.  Teacheck utilizará
+Git.
 
 \paragraph{}
-Git es uno de los sistemas más populares en el mundo para el control de versiones. Es distribuido por lo que nos da la capacidad de que cada desarrollador tenga un clon del repositorio completo en su propia máquina. También se utilizará la plataforma en la nube central de Git, GitHub. Allí se ubicará el repositorio remoto de la aplicación donde se subirán los cambios periódicamente al código.
+Git es uno de los sistemas más populares en el mundo para el control
+de versiones. Es distribuido por lo que nos da la capacidad de que
+cada desarrollador tenga un clon del repositorio completo en su propia
+máquina. También se utilizará la plataforma en la nube central de Git,
+GitHub. Allí se ubicará el repositorio remoto de la aplicación donde
+se subirán los cambios periódicamente al código.
 
 \paragraph{}
-La organización entre los desarrolladores es muy importante a la hora de llevar a cabo la construcción de un sistema. GitHub proporciona un sistema de issues donde permite crear diferentes tareas relacionadas al repositorio. Cada issue tiene un identificador y se le puede añadir documentación, comentarios y asignarlas a colaboradores del proyecto. Teniendo en cuenta este sistema se plantea el siguiente ciclo de desarrollo para nuevas iteraciones:
+La organización entre los desarrolladores es muy importante a la hora
+de llevar a cabo la construcción de un sistema. GitHub proporciona un
+sistema de issues donde permite crear diferentes tareas relacionadas
+al repositorio. Cada issue tiene un identificador y se le puede añadir
+documentación, comentarios y asignarlas a colaboradores del
+proyecto. Teniendo en cuenta este sistema se plantea el siguiente
+ciclo de desarrollo para nuevas iteraciones:
 
 \begin{itemize}
 \item
-  Para cada nueva iteración a desarrollar se debe crear un nuevo issue y escribir una dedicada documentación sobre lo que se quiere hacer.
+  Para cada nueva iteración a desarrollar se debe crear un nuevo issue
+  y escribir una dedicada documentación sobre lo que se quiere hacer.
 \item
   Asignarlas a los responsables de la tarea
 \item
@@ -75,7 +179,7 @@ La organización entre los desarrolladores es muy importante a la hora de llevar
   \begin{itemize}
   \item
     Enhancement
-  \item	
+  \item
     Bug
   \item
     Task
@@ -83,18 +187,39 @@ La organización entre los desarrolladores es muy importante a la hora de llevar
 \end{itemize}
 
 \paragraph{}
-Esto trae beneficio a todos ya que se mantiene claro y organizado las tareas que se deben llevar a cabo.
+Esto trae beneficio a todos ya que se mantiene claro y organizado las
+tareas que se deben llevar a cabo.
 
 \subsection{Trunk Based Development}
 \paragraph{}
-Se aplicará en este proyecto la metodología Trunk Based Development. No se utilizarán ramas adicionales para el desarrollo si no la rama principal master. Esto nos permitirá tener más responsabilidad a la hora de subir actualizaciones a la rama principal y siempre intentando mejora la calidad del código. Además proporciona más productividad y es perfecto para proyectos pequeños. 
+Se aplicará en este proyecto la metodología Trunk Based
+Development. No se utilizarán ramas adicionales para el desarrollo si
+no la rama principal master. Esto nos permitirá tener más
+responsabilidad a la hora de subir actualizaciones a la rama principal
+y siempre intentando mejora la calidad del código. Además proporciona
+más productividad y es perfecto para proyectos pequeños.
 
 \paragraph{}
-Permite una mejor visibilidad y historico de actualizaciones al código. Mantiene el foco siempre claro en lo que se está desarrollando ya que también cada commit tendrá consigo la referencia a que issue pertenece. Así todos los desarrolladores pueden identificar fácilmente cada commit y saber que tipo de funcionalidad se está desarrollando. 
+Permite una mejor visibilidad y historico de actualizaciones al
+código. Mantiene el foco siempre claro en lo que se está desarrollando
+ya que también cada commit tendrá consigo la referencia a que issue
+pertenece. Así todos los desarrolladores pueden identificar fácilmente
+cada commit y saber que tipo de funcionalidad se está desarrollando.
 
 \subsection{Organización de tareas GitHub}
 \paragraph{}
-La plataforma GitHub tiene un apartado en cada repositorio llamado Projects. En este apartado el sistema de GitHub permite crear Kanban Boards para coordinar tareas relacionadas al repositorio en este caso al software que está en desarrollo. Se aprovechará esta funcionalidad para coordinar todos los issues creados en el repositorio. Eso es, GitHub automáticamente detecta los issues creados en el repositorio y permite utilizarlas como cards para el panel de tareas.Otro punto positivo es la disposición de toda la documentación del issue en el panel, es decir, con apenas un click se puede obtener todos los detalles de la tarea: a quien está asignada, documentación, que tipo de issue es y etc.Para clasificar en qué estado se encuentra cada issue existen los siguientes apartados:
+La plataforma GitHub tiene un apartado en cada repositorio llamado
+Projects. En este apartado el sistema de GitHub permite crear Kanban
+Boards para coordinar tareas relacionadas al repositorio en este caso
+al software que está en desarrollo. Se aprovechará esta funcionalidad
+para coordinar todos los issues creados en el repositorio. Eso es,
+GitHub automáticamente detecta los issues creados en el repositorio y
+permite utilizarlas como cards para el panel de tareas.Otro punto
+positivo es la disposición de toda la documentación del issue en el
+panel, es decir, con apenas un click se puede obtener todos los
+detalles de la tarea: a quien está asignada, documentación, que tipo
+de issue es y etc.Para clasificar en qué estado se encuentra cada
+issue existen los siguientes apartados:
 
 \begin{itemize}
 \item
@@ -106,35 +231,81 @@ La plataforma GitHub tiene un apartado en cada repositorio llamado Projects. En 
 \end{itemize}
 \irudia{template/figs/kanban-board.png}{1}{Kanban Board}
 \paragraph{}
-Esto servirá para mantener las tareas organizadas y además de ofrecer un historial de todo lo que se ha hecho en el decorrer del proyecto.
+Esto servirá para mantener las tareas organizadas y además de ofrecer
+un historial de todo lo que se ha hecho en el decorrer del proyecto.
 
 \subsection{Documentación del código}
 \paragraph{}
-Un buen código es aquel que habla por sí solo y no necesita explicaciones adicionales. Pero mantener el código claro y conciso es una tarea difícil y en muchos casos imposible. Cada sistema tiende a profundizar en complejidad según más funcionalidades se añadan. Cuanto mayor el sistema más complejo será. Por lo tanto la buena estructuración y documentación de partes complejas del sistema es importante para el entendimiento del que intenta moverse por el mismo.
+Un buen código es aquel que habla por sí solo y no necesita
+explicaciones adicionales. Pero mantener el código claro y conciso es
+una tarea difícil y en muchos casos imposible. Cada sistema tiende a
+profundizar en complejidad según más funcionalidades se añadan. Cuanto
+mayor el sistema más complejo será. Por lo tanto la buena
+estructuración y documentación de partes complejas del sistema es
+importante para el entendimiento del que intenta moverse por el mismo.
 
 \paragraph{}
-Teacheck utilizará Doxygen, que es la de facto herramienta estándar para generar documentación desde un código fuente de Java. La documentación se realizará apenas sobre funciones y partes complejas del sistema. Debe ser clara y enfocada en la función en cuestión siguiendo los estándares de Doxygen para escribir documentación en Java.
+Teacheck utilizará Doxygen, que es la de facto herramienta estándar
+para generar documentación desde un código fuente de Java. La
+documentación se realizará apenas sobre funciones y partes complejas
+del sistema. Debe ser clara y enfocada en la función en cuestión
+siguiendo los estándares de Doxygen para escribir documentación en
+Java.
 
 \subsection{Integración Continua}
 \paragraph{}
-Uno de los puntos importantes cuando se trata del desarrollo de software es asegurar que todo el análisis en respecto al código sea realizado. Ese análisis está compuesto de diversas operaciones que verifican calidad del código producido. Esas operaciones son los tests unitarios, el build, formatos, distribución del código y etc. Con integración continua se puede asegurar que a cada push de cambios al repositorio remoto pase por el sistema de control de calidad del código. El valor que aporta este proceso es evidente y además de ser un sistema automatizado. Mantener el flujo de desarrollo eficiente, productivo y al mismo tiempo asegurando la calidad del producto en desarrollo.
+Uno de los puntos importantes cuando se trata del desarrollo de
+software es asegurar que todo el análisis en respecto al código sea
+realizado. Ese análisis está compuesto de diversas operaciones que
+verifican calidad del código producido. Esas operaciones son los tests
+unitarios, el build, formatos, distribución del código y etc. Con
+integración continua se puede asegurar que a cada push de cambios al
+repositorio remoto pase por el sistema de control de calidad del
+código. El valor que aporta este proceso es evidente y además de ser
+un sistema automatizado. Mantener el flujo de desarrollo eficiente,
+productivo y al mismo tiempo asegurando la calidad del producto en
+desarrollo.
 
 \paragraph{}
-Para ello se decidió utilizar un sistema de integración continua. Existen muchos sistemas, pero el elegido es Travis CI por su facilidad de integración con GitHub y empleo.
+Para ello se decidió utilizar un sistema de integración
+continua. Existen muchos sistemas, pero el elegido es Travis CI por su
+facilidad de integración con GitHub y empleo.
 \begin{figure}
   \includegraphics[scale=0.5]{haha}
-  \irudia{template/figs/pipeline-example.png}{1}{Pipeline status example}
+  \irudia{template/figs/pipeline-example.png}{1}{Pipeline status
+    example}
 \end{figure}
 \paragraph{}
-El proceso inicial de implementación del sistema de Integración Continua es muy simple. Travis permite mantener un script con la descripción de cómo se deberán realizar los controles de calidad. En el caso de Teacheck, siguiendo la filosofía de mantener el entorno uniforme, todo el pipeline por donde pasará el código se ejecutará en un entorno de Docker. Ese entorno será el mismo que el de desarrollo. En dicho entorno se realizarán los testeos unitarios y de integración, el coverage test y el packaging de la aplicación en un fat jar (Un archivo JAR con todas la dependencias) con la nueva versión. Por último se creará una imagen a partir del JAR creado y se publicará en la plataforma de Docker Hub (registro de imágenes Docker). 
+El proceso inicial de implementación del sistema de Integración
+Continua es muy simple. Travis permite mantener un script con la
+descripción de cómo se deberán realizar los controles de calidad. En
+el caso de Teacheck, siguiendo la filosofía de mantener el entorno
+uniforme, todo el pipeline por donde pasará el código se ejecutará en
+un entorno de Docker. Ese entorno será el mismo que el de
+desarrollo. En dicho entorno se realizarán los testeos unitarios y de
+integración, el coverage test y el packaging de la aplicación en un
+fat jar (Un archivo JAR con todas la dependencias) con la nueva
+versión. Por último se creará una imagen a partir del JAR creado y se
+publicará en la plataforma de Docker Hub (registro de imágenes
+Docker).
 
 \subsection{Estándar de Codificación}
 \paragraph{Nomenclatura}
-Java por defecto a la hora de nombrar clases, variables, constantes, etc. es una mezcla entre la nomenclatura tradicional en Inglés y la nomenclatura funcional adoptada. Es decir que por estandarización se puede escribir en Inglés y se mantendrá así por convenio, casos como insert, update, delete, create, retrieve, list, set, get, newInstance, etc.
+Java por defecto a la hora de nombrar clases, variables, constantes,
+etc. es una mezcla entre la nomenclatura tradicional en Inglés y la
+nomenclatura funcional adoptada. Es decir que por estandarización se
+puede escribir en Inglés y se mantendrá así por convenio, casos como
+insert, update, delete, create, retrieve, list, set, get, newInstance,
+etc.
 
-Para la parte funcional se utilizará castellano. Así pues los métodos podrán tener la mezcla dicha antes del Inglés. Ejemplos como getListAlumnos o updateAlumno.
+Para la parte funcional se utilizará castellano. Así pues los métodos
+podrán tener la mezcla dicha antes del Inglés. Ejemplos como
+getListAlumnos o updateAlumno.
 \paragraph{Paquetes}
-Así como en la mayoría de los estándares de Java los nombres de los paquetes deberán ser escritos en minúsculas y libre de caracteres especiales. Como este proyecto utiliza Maven como el build tool la estructuración inicial de los paquetes es la siguiente:
+Así como en la mayoría de los estándares de Java los nombres de los
+paquetes deberán ser escritos en minúsculas y libre de caracteres
+especiales. Como este proyecto utiliza Maven como el build tool la
+estructuración inicial de los paquetes es la siguiente:
 
 \begin{itemize}
 \item
@@ -142,24 +313,26 @@ Así como en la mayoría de los estándares de Java los nombres de los paquetes 
   \begin{itemize}
   \item
     main
-    \begin{itemize}      
+    \begin{itemize}
     \item
       com.teacheck (paquete base)
     \end{itemize}
   \item
    test
-   \begin{itemize}     
-   \item     
-     com.teacheck (paquete base)     
+   \begin{itemize}
+   \item
+     com.teacheck (paquete base)
    \end{itemize}
   \end{itemize}
 \end{itemize}
 
 \paragraph{}
-Como se puede ver en la estructura el paquete base tiene como nombre com.teacheck. Este paquete no definirá ninguna clase. 
+Como se puede ver en la estructura el paquete base tiene como nombre
+com.teacheck. Este paquete no definirá ninguna clase.
 
 \paragraph{}
-A partir de este paquete base se definirá la estructura en árbol de los paquetes.
+A partir de este paquete base se definirá la estructura en árbol de
+los paquetes.
 
 \begin{itemize}
 \item
@@ -193,75 +366,113 @@ A partir de este paquete base se definirá la estructura en árbol de los paquet
 \end{itemize}
 
 \paragraph{}
-Todo que sea común en muchas partes del sistema se deberán ubicar en la carpeta common.
+Todo que sea común en muchas partes del sistema se deberán ubicar en
+la carpeta common.
 
 \paragraph{Nombre de Interfaces}
 \subparagraph{}
-Los nombres de las interfaces tendrán como sufijo una I. El nombre puede esta compuesto de multiples palabras terminando en el sufijo concretado anteriormente. La primera letra de cada palabra debe estar escrita en mayúscula(CamelCase). Se debe evitar nombres abreviados lo que por su vez dificulta el entendimiento de la interfaz.
+Los nombres de las interfaces tendrán como sufijo una I. El nombre
+puede esta compuesto de multiples palabras terminando en el sufijo
+concretado anteriormente. La primera letra de cada palabra debe estar
+escrita en mayúscula(CamelCase). Se debe evitar nombres abreviados lo
+que por su vez dificulta el entendimiento de la interfaz.
 
 Ejemplo: UserManagerI
 
 \paragraph{Nombre de Clases}
 \subparagraph{}
-Asi como las interfaces las clases deben seguir el convenio de nombres CamelCase. Es decir la primera letra de una palabra siempre en mayúsculas. Los nombre tienen que ser descriptivos y entendibles sin abreviaciones no comunes. Algunas de las abreviaciones estándares como DAO, DTO,URL, JDBC, etc. son permitidas.
+Asi como las interfaces las clases deben seguir el convenio de nombres
+CamelCase. Es decir la primera letra de una palabra siempre en
+mayúsculas. Los nombre tienen que ser descriptivos y entendibles sin
+abreviaciones no comunes. Algunas de las abreviaciones estándares como
+DAO, DTO,URL, JDBC, etc. son permitidas.
 
 \paragraph{Métodos}
 \subparagraph{}
-Los métodos deberán ser verbos (en infinitivo), en mayúsculas y minúsculas con la primera letra del nombre en minúsculas, y con la primera letra de cada palabra interna en mayúsculas (lowerCamelCase). No se permiten caracteres especiales.
+Los métodos deberán ser verbos (en infinitivo), en mayúsculas y
+minúsculas con la primera letra del nombre en minúsculas, y con la
+primera letra de cada palabra interna en mayúsculas
+(lowerCamelCase). No se permiten caracteres especiales.
 
-El nombre debe de ser descriptivo y en principio la longitud del mismo no es importante.
+El nombre debe de ser descriptivo y en principio la longitud del mismo
+no es importante.
 
 \paragraph{Variables}
 \subparagraph{}
-Los nombres de las variables utilizan las mismas reglas que los métodos con excepción de la longitud. Intentar no utilizar abreviaciones. Con excepciones en casos en el cual la abreviación es común y evidente. 
+Los nombres de las variables utilizan las mismas reglas que los
+métodos con excepción de la longitud. Intentar no utilizar
+abreviaciones. Con excepciones en casos en el cual la abreviación es
+común y evidente.
 
-Evitar caracteres especiales. Nombres sin ningún tipo de significado como i  o j. Pero por ejemplo se pueden utilizar en bucles como el for. 
+Evitar caracteres especiales. Nombres sin ningún tipo de significado
+como i o j. Pero por ejemplo se pueden utilizar en bucles como el for.
 
 El primer bucle siempre tendrá como variable i como iterador.
 
 
 \paragraph{Constantes}
 \subparagraph{}
-Las constantes de clase deberán escribirse todo en mayúsculas con las palabras separadas por subrayados \emph{underscore}. Todas será declaradas como public static final. Con excepción de constantes privadas a la clase.
+Las constantes de clase deberán escribirse todo en mayúsculas con las
+palabras separadas por subrayados \emph{underscore}. Todas será
+declaradas como public static final. Con excepción de constantes
+privadas a la clase.
 
 
 \paragraph{Estilo de codificación - Comentarios}
 \subparagraph{}
-Los comentarios se pueden utilizar para añadir información a alguna clase o método. Dichos comentarios son para el mejor entendimiento del que lee sobre el diseño de la implementación. Este tipo de documentación solo es aconsejable en partes donde no está claro para qué sirve o lo que hace.
+Los comentarios se pueden utilizar para añadir información a alguna
+clase o método. Dichos comentarios son para el mejor entendimiento del
+que lee sobre el diseño de la implementación. Este tipo de
+documentación solo es aconsejable en partes donde no está claro para
+qué sirve o lo que hace.
 
 
 \paragraph{Estilo de codificación - Documentación}
 \subparagraph{}
-La documentación de cada clase es obligatorio. Métodos y constantes a su vez deberán disponer de comentarios de documentación cuando sea necesario. Es decir en partes complejas donde es difícil comprender lo que hacer.
+La documentación de cada clase es obligatorio. Métodos y constantes a
+su vez deberán disponer de comentarios de documentación cuando sea
+necesario. Es decir en partes complejas donde es difícil comprender lo
+que hacer.
 
-Para cada clase y interfaz se debe haber una descripción genérica sobre su propósito y responsabilidad. Además también llevar el nombre del autor o autores de clase / interfaz.La documentación deberá ser escrita en tercera persona
+Para cada clase y interfaz se debe haber una descripción genérica
+sobre su propósito y responsabilidad. Además también llevar el nombre
+del autor o autores de clase / interfaz.La documentación deberá ser
+escrita en tercera persona
 
-Se deberán utilizar tags  para documentar parámetros, lo que devuelve cada método, excepciones que pueden ocurrir, etc. Aquí el orden en el cual se deben documentar dichos tags:
+Se deberán utilizar tags para documentar parámetros, lo que devuelve
+cada método, excepciones que pueden ocurrir, etc. Aquí el orden en el
+cual se deben documentar dichos tags:
 
 \begin{itemize}
-\item \textbf{@param }
-  La descripción de cada parámetro debe definir el tipo del mismo seguido que define el parámetro
-\item \textbf{@return }
-  este tag no es necesario para métodos que tienen como tipo de retorno el void.
-\item \textbf{@throws }
-  Descripción breve de la excepción. Lo que pueda causar la excepción.
-\item \textbf{@link }
-  Link para complementar la documentación con alguna otra explicación o relación al documentado. 
+\item \textbf{@param } La descripción de cada parámetro debe definir
+  el tipo del mismo seguido que define el parámetro
+\item \textbf{@return } este tag no es necesario para métodos que
+  tienen como tipo de retorno el void.
+\item \textbf{@throws } Descripción breve de la excepción. Lo que
+  pueda causar la excepción.
+\item \textbf{@link } Link para complementar la documentación con
+  alguna otra explicación o relación al documentado.
 \end{itemize}
 
-Se debe evitar el uso excesivo de link para no llenar la documentación de enlaces.
+Se debe evitar el uso excesivo de link para no llenar la documentación
+de enlaces.
 
-Se puede utilizar el atributo <code> para palabras reservadas de Java como nombres de clases, interfaces, propriedades, etc.
+Se puede utilizar el atributo <code> para palabras reservadas de Java
+como nombres de clases, interfaces, propriedades, etc.
 
 
 \subparagraph{}
-Se debe evitar el uso excesivo de link para no llenar la documentación de enlaces.
+Se debe evitar el uso excesivo de link para no llenar la documentación
+de enlaces.
 
-Se puede utilizar el atributo <code> para palabras reservadas de Java como nombres de clases, interfaces, propriedades, etc.
+Se puede utilizar el atributo <code> para palabras reservadas de Java
+como nombres de clases, interfaces, propriedades, etc.
 
 \paragraph{Estilo de codificación - Documentación}
 \subparagraph{}
-Para La declaración de variables se utilizará una declaración de cada vez y no se permiten dejar variables locales sin inicializar salvo en el caso de que sean propriedades de un objeto.
+Para La declaración de variables se utilizará una declaración de cada
+vez y no se permiten dejar variables locales sin inicializar salvo en
+el caso de que sean propriedades de un objeto.
 
 la codificación correcta sería:
 
