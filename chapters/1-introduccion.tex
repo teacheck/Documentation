@@ -1,105 +1,114 @@
 \chapter{Introducción}
 % \thispagestyle{empty}
-\section{Teacheck}
-\paragraph{}
-Teacheck es una aplicación para realizar el seguimiento del alumnado
-de una universidad.  Esta aplicación contará con un sistema para
-analizar el rendimiento y detectar a tiempo un deterioro del mismo. En
-base a esto, nuestro objetivo es que gracias a los servicios
-proporcionados se consiga revertir la situación y mejorar tanto el
-rendimiento como motivación del alumno en concreto. También queremos
-monitorizar todo el proceso de seguimiento para así poder aligerar la
-carga de trabajo del profesorado. Como último objetivo tenemos el
-detectar no solo que el alumno necesita un toque de atención, si no
-también saber cual es la raíz del problema y a su vez podremos
-detectar problemas a nivel de clase, esto es, si en una misma clase
-vemos que se dan los mismos problemas en demasiados casos, se alertará
-de ello para que el cliente esté al tanto y pueda buscar una solución.
+\section{Problema}
 
-La solución no se centrará en mejorar cómo se imparten las clases, o
-en hacerle entender mejor al alumno la materia, sino en un proceso el
-cual analiza y monitoriza los resultados individuales de cada alumno
-con el fin de encontrar los posibles problemas a tiempo. Esto no quita
-que nuestros análisis no puedan detectar un posible problema a nivel
-de clase o de entendimiento del alumno, pero la solución de ese
-problema no será nuestra responsabilidad. No pretendemos cambiar la
-forma de funcionar de una institución, sino mejorarla.
-
-La aplicación web contará con un sistema distribuido que será el
-responsable de proveer servicios básicos a la aplicación o puede que
-algún servicio adicional acordado con el cliente, se implemente con el
-sistema. Dicho sistema estará dividido en varios microservicios que
-ofrecen recursos esenciales a la aplicación principal. Servicios como,
-Base de Datos, el proveedor de datos de la Universidad, el sistema de
-IA Machine Learning y como dicho antes si es de interés del cliente,
-se podrá amoldar a algún sistema que existe y que ya provee todos los
-datos de los alumnos.
-
-Teacheck, es un sistema de monitoramento que ofrecerá periódicamente
-análisis sobre la situación de cada alumno registrado en la
-universidad. Contará con el sistema de Machine Learning (Inteligencia
-Artificial) para efectuar los análisis. Estos escaneos de información
-son específicamente predicciones en base a un modelo que ya dispone el
-sistema con la información inicial proporcionada por el cliente.
-
-Cada análisis traerá consigo resultados sobre cada alumno en respecto
-a su rendimiento en el curso correspondiente. Contaremos tanto con los
-datos recogidos por el profesor como con los que el alumno pueda
-proporcionar. Por parte del profesorado recogeremos las notas,
-asistencia y si el alumno hace entrega o no de los trabajos que se
-mandan. También tendrá como opcionales la atención, motivación y la
-nota del alumno en los entregables. Luego, el alumno tendrá como tarea
-opcional hacer un feedback rápido en el cual podrá ofrecer a la
-aplicación su atención en clase, motivación, asistencia y tiempo
-dedicado a las asignaturas fuera del horario de clase. Es a tener en
-cuenta que si los datos opcionales se entregan, se conseguirá un
-análisis mucho más preciso y eficaz, por eso son importantes unas
-cuantas claves que más tarde se mencionan en el apartado de
-actividades y recursos clave.
-
-Teacheck tendrá un sistema de alarmas que funcionará según el
-resultado de los análisis. Estas alarmas servirán para avisar a los
-profesores, vía email y aplicación, sobre un estado crítico o sobre la
-necesidad de darle un toque a un alumno. Entonces, si después de un
-análisis la aplicación detecta una de las distintas alarmas que
-tenemos diseñadas, las cuales se dividen en dos grupos, avisará al
-profesor o responsable correspondiente. Tal y como se acaba de
-mencionar las alarmas están divididas en dos grandes grupos, uno para
-alertar de un alumno y otro para alertar de un posible problema a
-nivel clase. Por parte de las alertas del alumno, se recibirán cuando
-se note un bajo rendimiento tanto en una asignatura como en el curso
-en general. Luego se analizará el rendimiento general de una clase por
-lo tanto, en caso de que baje demasiado saltará una alerta, a la vez
-que con el nivel de satisfacción, que en caso de que el nivel sea bajo
-también se podrá detectar. Por último la aplicación tendrá un
-calendario por curso donde los profesores introducirán sus exámenes
-correspondientes para que así la aplicación pueda realizar un escaneo
-una semana antes del mismo y así el profesor pueda ver si el alumno
-está preparado o no.
-
-La aplicación dispone de dos roles distintos:
+Lo primero, comenzaremos con hacer un análisis de la problemática que hemos detectado, haciendo énfasis en los aspectos más importantes del mismo. También hablaremos de la solución que se ha intentado dar a dicho problema, y cómo esta solución da pié a otros problemas que no le permiten solucionar ni lograr los objetivos que se plantea.
 \begin{itemize}
-\item \textbf{Alumnos:} Podrá ver su seguimiento a diario y además,
-  proveer datos al sistema de la aplicación ya que se le pedirá
-  rellenar una encuesta semanalmente. Dicha encuesta preguntará
-  detalles sobre el estado actual del alumno y su nivel de
-  satisfacción en relación a las actividades lectivas.
-
-\item \textbf{Profesores:} Podrá monitorizar sus alumnos y cuando sea
-  el caso recibirá alarmas de alumnos que se han detectado con bajo
-  rendimiento o que necesiten atención.
+\item{\textbf{Problema: }}Alto índice de repetidores y abandonos en las universidades.
 \end{itemize}
+
+A día de hoy, uno de cada tres alumnos abandona la carrera universitaria que comienza a cursar. De entre ellos, una tercera parte cambia de carrera y la otra abandona la universidad. Los datos son alarmantes y no muchas universidades toman medidas al respecto. 
+
+Las razones por la que esto sucede son varias. Para empezar, la desinformación por parte de los alumnos a la hora de elegir la carrera da como resultado que muchos de ellos no tomen la decisión correcta y que al cabo de unas semanas o meses de comenzar no se sientan cómodos con la elección realizada. Por otra parte, la tasa de graduación ronda entre el 64\% y el 83\% lo cual indica que el número de asignaturas suspendidas y repetidas es elevada y esto lleva a muchos alumnos a no querer continuar con la carrera.\cite{elMundoProblema},\cite{stecylProblema}
+
+Teniendo esto en cuenta, nos hemos centrado en analizar la tasa de repetidores. Hay casos en los que el alumno en cuestión no consigue el aprobado debido a una falta de capacidad y es algo a tener en cuenta pero no es la razón mayoritaria. La falta de responsabilidad, motivación y atención en clase por parte del alumno son los verdaderos problemas del bajo índice de graduación universitaria. Y es que otros problemas pueden llegar a afectar a dicho índice, pero estos son la verdadera clave. La razón por la que estos problemas suceden son más complicados de analizar y predecir, y se necesita de un conocimiento psicológico y análisis profundo del problema en cuestión para poder llegar a una conclusión, pero sí que podemos asegurar, tal y como hemos y han observado muchos alumnos universitarios, que en parte se dan a unos malos hábitos de estudio y responsabilidad.
+\begin{itemize}
+\item{\textbf{Solución: }}Seguimiento del alumno por parte del profesorado.
+\end{itemize}
+
+Para poder combatir las tasas antes mencionadas muchas universidades optan por hacer un seguimiento de su alumnado. Generalmente recogen los datos que los alumnos van generando a lo largo del curso como pueden ser las notas, entregables, asistencia, entre otros. Básicamente analizan los datos y cuando consideran que un alumno no lleva una buena dinámica o sus resultados no son los correctos, lo alertan y tratan de revertir su situación.
+
+Pero aun haciendo esto, la realidad es que las tasas no sufren grandes cambios debido a los diferentes problemas que se detallan a continuación.
+\begin{itemize}
+\item{\textbf{Nuevos problemas}}
+\paragraph{}
+\textbf{Demasiados alumnos:}
+\paragraph{}
+Hacer el seguimiento de un alumno puede llegar a ser posible, incluso conseguir revertir su situación, pero porque no cambian las tasas entonces? Esto se debe a que el número de alumnos es demasiado elevado, y son los profesores normalmente los que se ocupan de dicho seguimiento.Esto implica que cada profesor se tiene que ocupar de sus más de 200 300 o incluso 500 alumnos de hasta 4 carreras distintas. Y no solo eso, si no que a su vez debería coordinarse con los demás profesores de cada alumno para poder determinar con exactitud cuando un alumno va mal. Por lo tanto, la carga de trabajo que se le añade a un profesor al asignarle la tarea de hacer el seguimiento es inmensa y eso hace que el seguimiento no pueda efectuarse adecuadamente.
+
+Además creemos que el seguimiento tiene dos aspectos importantes. La primera, que consiste en poder detectar a tiempo el deterioro del rendimiento del alumno, y la segunda, el comunicar de forma efectiva dicho problema al alumno para conseguir revertir la situación. Pero para esto último no se suele contar con el mismo protagonista, esto es, el alumno, lo cual es un error que contemplamos a continuación.
+\paragraph{}
+\textbf{No se cuenta con la opinión del alumno:}
+\paragraph{}
+Tal y como se acaba de mencionar, no contar con la opinión o información que un alumno pueda aportar a dicho seguimiento es un error, ya que para conseguir revertir su situación no solamente se trata de detectar el problema a tiempo, si no que también se deben conocer los detonantes que han derivado en dicho problema. Por ello, creemos que obviar la información que un alumno pueda aportar es algo que no se debe hacer.
+\end{itemize}
+
+\section{Objetivos}
+
+Visto y analizado el problema, el objetivo que se plantea es poder ofrecer un producto que cumpla con los siguientes objetivos.
+\begin{itemize}
+\item{\textbf{Analizar:}}
+\end{itemize}
+\paragraph{}
+El primer objetivo es conseguir un análisis del alumno preciso y eficaz. Debido a que el problema se debería detectar a tiempo, también es esencial que se analize la situación del alumno constantemente. También, tal y como se ha mencionado en el análisis del problema, saber cuales son los detonantes es algo necesario para que el responsable que trate de revertir la situación del alumno cuente con esa información que consideramos necesario para que logre su objetivo. También queremos llegar más allá y detectar posibles bajos rendimientos a nivel de clase, esto es, poder ver si existe algún patrón negativo a nivel de clase y cuál podría ser el detonante. 
+\begin{itemize}
+\item{\textbf{Automatizar:}}
+\end{itemize}
+Otro de los puntos importantes a la hora de analizar el problema era que a los profesores les suponía demasiada carga de trabajo el tener que realizar el seguimiento. Por ello, otra de las claves del producto será lograr una automatización que libre a los profesores de dicha carga.
+\begin{itemize}
+\item{\textbf{Desplegar información:}}
+\end{itemize}
+A su vez, queremos crear una plataforma en la que los profesores puedan ver los resultados de todo el seguimiento.
+\begin{itemize}
+\item{\textbf{El alumno:}}
+\end{itemize}
+Tal y como se ha mencionado, consideramos que la información que un alumno puede proveer es esencial para poder tanto realizar un seguimiento efectivo como para poder conocer los detonantes de dichos problemas. Por ello, será importante que nuestra plataforma cuente con un sistema donde el alumno pueda aportar información, que más tarde se utilizará para realizar el seguimiento.
+\begin{itemize}
+\item{\textbf{El producto:}}
+\end{itemize}
+También mencionar que nuestro producto debe de ser escalable y seguro. 
+\begin{itemize}
+\item{\textbf{Objetivos cuantitativos:}}
+\end{itemize}
+\paragraph{}
+Los objetivos que Teacheck quiere conseguir implantando su sistema en la universidad, como antes se ha mencionado, es incrementar o disminuir las tasas de ese centro hasta llegar al porcentaje que deseamos. Por ello los porcentajes mínimos a los que nos gustaría llegar son los siguientes:
+\begin{enumerate}
+\item\textbf{Incrementar}\\
+\textbf{Éxito: } De los créditos a conseguir, cuantos se aprueban\\
+(rango actual) - (rango que se quiere conseguir aumentar)\\
+50\%-60\% -> 17\%\\
+60\%-70\% -> 15\%\\
+70\%-80\% -> 10\%\\
++80\% -> 7\%\\
+\\
+\textbf{Rendimiento: } De los créditos ordinarios a conseguir, cuantos se aprueban\\
+50\%-60\% -> 17\%\\
+60\%-70\% -> 15\%\\
+70\%-80\% -> 10\%\\
++80\% -> 7\%\\
+\\
+\textbf{Graduación: } Cuántos alumnos acaban el curso en el tiempo previsto por la universidad\\
+30\%-40\% -> 12\%\\
+40\%-50\% -> 9\%\\
++60\% -> 7\%\\
+
+\item\textbf{Disminuir}\\
+\textbf{Abandono: } Cuántos alumnos abandonan el curso\\
+40\%-30\% -> 14\%\\
+30\%-20\% -> 11\%\\
+-20\% -> 5\%\\
+\\
+\textbf{Repetidores: } De los alumnos que están cursando un año, cuantos no pasan de curso\\
+40\%-30\% -> 14\%
+30\%-20\% -> 11\%
+-20\% -> 5\%
+\\
+\textbf{Suspensos: } De los exámenes o puntos de control hechos, cuántos son suspendidos\\
+40\%-30\% -> 13\%\\
+30\%-20\% -> 7\%\\
+-20\% -> 5\%\\
+\end{enumerate}
 
 \section{Mercado}
 
 \paragraph{}
-La aplicación está dirigida a universidades que busquen hacer un
+La aplicación estará dirigida a universidades que busquen hacer un
 seguimiento detallado de su alumnado. El usuario final del sistema,
 por tanto, serán tanto los diferentes grupos de profesores o
 coordinadores como los alumnos que se encuentren en la institución. El
 ámbito geográfico que pretendemos abarcar es el de nivel
-nacional. Tras analizar diferentes aplicaciones hemos visto que se
-dividen en distintas categorías:
+nacional. Antes de pensar en nuestra solución hemos analizado diferentes aplicaciones
+y las hemos dividido en distintas categorías:
 
 \begin{itemize}
 \item Aplicaciones con IA que ayudan a los alumnos a aprender de una
@@ -160,16 +169,51 @@ dividen en distintas categorías:
   material de estudio, las calificaciones intermedias obtenidas en la
   evaluación continua… Al poder compararse con los históricos de
   estudiantes anteriores, se observa si existe un
-  patrón.\cite{rendimientoAlumnos}
+  patrón.\cite{rendimientoAlumnos}	
 \end{itemize}
 \end{itemize}
 \end{itemize}
 
+\section{Solución}
+
+\paragraph{}
+Una vez analizado el mercado y para cumplir con los objetivos definidos, se planteó Teacheck. Teacheck contará con distintas funcionalidades para cumplir con lo propuesto.
+\begin{itemize}
+\item{\textbf{Aplicación web: }}
+\end{itemize}
+La aplicación web contará con un sistema distribuido que será el responsable de proveer servicios básicos a la aplicación o puede que algún servicio adicional acordado con el cliente, se implemente con el sistema. Dicho sistema estará dividido en varios microservicios que ofrecen recursos esenciales a la aplicación principal. Servicios como, acceso a datos, el proveedor de datos de la Universidad, el sistema de IA Machine Learning y como dicho antes si es de interés del cliente, se podrá amoldar a algún sistema que existe y que ya provee todos los datos de los alumnos.\\
+\\
+\textbf{Roles:}
+\paragraph{}
+La aplicación dispone de dos roles distintos:
+\begin{enumerate}
+\item\textbf{Alumno: }podrá ver su seguimiento a diario y además, proveer datos al sistema de la aplicación ya que se le pedirá rellenar una encuesta semanalmente. Dicha encuesta preguntará detalles sobre el estado actual del alumno y su nivel de satisfacción en relación a las actividades lectivas.
+\item\textbf{Profesor: }podrá monitorizar sus alumnos y cuando sea el caso recibirá alarmas de alumnos que se han detectado con bajo rendimiento o que necesiten atención.
+\end{enumerate}
+
+\begin{itemize}
+\item{\textbf{Machine learning: }}
+\end{itemize}
+\\
+\textbf{Análisis - Inteligencia artificial:}
+\paragraph{}
+Teacheck, es un sistema de monitoramento que ofrecerá periódicamente análisis sobre la situación de cada alumno registrado en la universidad. Contará con el sistema de Machine Learning (Inteligencia Artificial)  para efectuar los análisis. Estos escaneos de información son específicamente predicciones en base a un modelo que ya dispone el sistema con la información inicial proporcionada por el cliente.
+
+Cada análisis traerá consigo resultados sobre cada alumno en respecto a su rendimiento en el curso correspondiente. Contaremos tanto con los datos recogidos por el profesor como con los que el alumno pueda proporcionar. Por parte del profesorado recogeremos las notas, asistencia y si el alumno hace entrega o no de los trabajos que se mandan. También tendrá como opcionales la atención, motivación y la nota del alumno en los entregables. Luego, el alumno tendrá como tarea opcional hacer un feedback rápido en el cual podrá ofrecer a la aplicación su atención en clase, motivación, asistencia y tiempo dedicado a las asignaturas fuera del horario de clase. Es a tener en cuenta que si los datos opcionales se entregan, se conseguirá un análisis mucho más preciso y eficaz, por eso son importantes unas cuantas claves que más tarde se mencionan en el apartado de actividades y recursos clave.\\
+\\
+\textbf{Resultados - Alarmas:}
+\paragraph{}
+Teacheck tendrá un sistema de alarmas que funcionará según el resultado de los análisis. Estas alarmas servirán para avisar a los profesores, vía email y aplicación, sobre un estado crítico o sobre la necesidad de darle un toque a un alumno. Entonces, si después de un análisis la aplicación detecta una de las distintas alarmas que tenemos diseñadas, las cuales se dividen en dos grupos, avisará al profesor o responsable correspondiente. Tal y como se acaba de mencionar las alarmas están divididas en dos grandes grupos, uno para alertar de un alumno y otro para alertar de un posible problema a nivel clase. Por parte de las alertas del alumno, se recibirán cuando se note un bajo rendimiento tanto en una asignatura como en el curso en general. Luego se analizará el rendimiento general de una clase por lo tanto, en caso de que baje demasiado saltará una alerta, a la vez que con el nivel de satisfacción, que en caso de que el nivel sea bajo también se podrá detectar. Por último la aplicación tendrá un calendario por curso donde los profesores introducirán sus exámenes correspondientes para que así la aplicación pueda realizar un escaneo una semana antes del mismo y así el profesor pueda ver si el alumno está preparado o no.\\
+\\
+\textbf{Seguridad:}
+\paragraph{}
+El producto desarrollado tiene que cumplir unos requisitos de seguridad y por ello se realizará tanto un análisis de riesgos como un análisis de riesgos residual, para luego implementar lo definido y contar con una aplicación seguro y libre en lo medida de lo posible de amenazas.\\
+\\
+\textbf{Mercado:}
 \paragraph{} Teacheck se situa en la categoría de aplicaciones que intentan prevenir el deterioro del rendimiento académico de los alumnos. Dentro de esta categoría ya existe una institución que realiza este tipo de actividad. Pero Teacheck ofrece algo más que solamente el análisis de los datos proporcionados por el profesor, también ofrece la posibilidad de que un alumno pueda proporcionar datos los cuales permitirá a la aplicación ser más precisa y eficaz.
 Ya que de esta manera, los datos introducidos por los profesores nos
 dirán en qué está fallando el alumno y los datos proporcionados por el
 alumno, cómo solucionarlo.
-
 
 \section{Propuesta de Valor}
 

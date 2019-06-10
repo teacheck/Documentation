@@ -1,11 +1,11 @@
-\chapter{Lo de IA}
+\chapter{Predictor}
 
 \section{Introducción}
 \paragraph{}
 El núcleo de la aplicación reside en una máquina la cual tiene tres
-diferentes objetivos. El primero, predecir el rendimiento de un alumno
+diferentes objetivos. El primero, \textbf{predecir} el rendimiento de un alumno
 a lo largo del curso, creando alarmas cuando sean necesarias. El
-segundo, poder analizar y descubrir los detonantes de las posibles
+segundo, poder \textbf{analizar y descubrir} los detonantes de las posibles
 alarmas, ya que sirve de poco saber de la existencia de un problema
 sin conocer las razones. Y por último, poder a su vez predecir cuando
 el rendimiento de una clase a decaído, y al igual que con un alumno,
@@ -16,7 +16,7 @@ automático, una rama de la inteligencia artificial cuyo objetivo es
 desarrollar técnicas que permitan que las computadoras aprendan. De
 esta manera, hemos generado modelos, extraído correlaciones y
 desentrañado clasificadores de datos como el bayesiano
-ingenuo(1). Pero antes de entrar en detalle y ver cómo se ha
+ingenuo \cite{clasificadorBayesianoIngenuo} . Pero antes de entrar en detalle y ver cómo se ha
 analizado, diseñado e implementado todo lo mencionado, vamos a dar un
 paso atrás, ya que para poder desarrollar todo lo mencionado, se
 necesitan datos.
@@ -139,42 +139,16 @@ clase. Más adelante se detalla el procedimiento de cada una de ellas.
 
 \subsection{Creación datos}
 \paragraph{}
-Una vez definidas las variables hemos creado los datos que se usarán
-para diseñar y crear los modelos. La creación de dichos datos no ha
-sido aleatoria, ya que aun siendo una simulación se requerían datos
-que cumpliesen una lógica para de esta manera poder crear modelos que
-cumpliesen con su función.
+Una vez definidas las variables hemos creado los datos que se usarán para diseñar y crear los modelos. La creación de dichos datos no ha sido aleatoria, ya que aun siendo una simulación se requerían datos que cumpliesen una lógica para de esta manera poder crear modelos que cumpliesen con su función.
 
-Dicho esto, los datos se han generado utilizando Excel(2), básicamente
-debido a su facilidad de generar muchos datos haciendo uso de sus
-macros. Por ello, se ha utilizado una macro para cada variable, y
-estas se han generado siguiendo una distribución normal que contaba
-con una desviación típica. De esta manera, generamos cientos de datos
-aleatorios que seguían una lógica definida por nosotros, la cual
-definimos tras estudiar y comparar datos reales.
+Dicho esto, los datos se han generado utilizando Excel, debido a su facilidad de generar una gran cantidad de datos haciendo uso de sus macros. Por ello, se ha utilizado una macro para cada variable, y estas se han generado siguiendo una \textbf{distribución normal} que contaba con una \textbf{desviación típica}. De esta manera, generamos cientos de datos aleatorios que siguen una lógica definida por nosotros y contrastada por un experto .
 
-Hablando de números, se han creado datos de 300 alumnos para diez
-semanas de lo que podría ser un curso, contando cada semana con cinco
-asignaturas. En las dos primeras semanas tanto la nota del examen como
-el entregable están vacías, y de la tercera a la quinta se añaden
-datos tanto al entregable como a su nota. Esto se hizo con el objetivo
-de tener datos más reales, ya que en las primeras semanas de un curso
-real no se suelen contar con estos datos.
+En cifras, se han creado datos de 300 alumnos para diez semanas de lo que podría ser un curso, contando cada semana con cinco asignaturas. En las dos primeras semanas tanto la nota del examen como el entregable están vacías, y de la tercera a la quinta se añaden datos tanto al entregable como a su nota. Esto se hizo con el objetivo de tener datos más reales, ya que en las primeras semanas de un curso real no se suelen contar con estos datos.
 
-Una vez generados todos los datos para las diez semanas, comenzamos a
-diseñar lo que sería la función que más tarde generaría el target,
-esto es, lo que definiría si el alumno está necesitado de una alarma o
-no. Para ello, dimos un peso a cada variable, creamos la función, y
-después de insertar la misma en una macro de Excel, generamos el
-target.
+Una vez generados todos los datos para las diez semanas, comenzamos a diseñar lo que sería la función que más tarde generaría el target, esto es, lo que definiría si el alumno está necesitado de una alarma o no. Para ello, dimos un peso a cada variable, creamos la función, y después de insertar la misma en una macro de Excel, generamos el target.
 
-Y de esta manera, haciendo uso de una distribución normal seguida de
-una desviación típica y añadiendo la función diseñada por nosotros,
-generamos los datos de forma lógica dándoles el sentido que buscábamos
-y necesitábamos para poder crear nuestros modelos.
+Y de esta manera, haciendo uso de una distribución normal seguida de una desviación típica y añadiendo la función diseñada por nosotros, generamos los datos de forma lógica dándoles el sentido que buscábamos y necesitábamos para poder crear nuestros modelos.
 
-(aquí se puede insertar foto o tabla o lo que sea con las
-distribuciones que hemos seguido. Tmb para la función.)
 
 
 \subsection{Creación de modelos}
@@ -208,93 +182,49 @@ mencionadas.
 \section{Enseñanza automática}
 \subsection{Predicciones y correlaciones}
 \paragraph{}
-Con el objetivo de lograr resultados haciendo uso de los modelos
-previamente mencionados, se decidió crear un servicio web en R, el
-cual una vez está activo y escuchando, recibe información en formato
-JSON relativa a 60 estudiantes por cada una de las 5 asignaturas en
-una semana.
+Con el objetivo de lograr resultados haciendo uso de los modelos previamente mencionados, se decidió crear un servicio web en R, el cual una vez está activo y escuchando, recibe información en formato JSON relativa a 60 estudiantes por cada una de las 5 asignaturas en una semana.
 
-Se requiere que unos de los datos que va a ser enviado a este servicio
-junto con todos los atributos del alumno, sea el número de la semana,
-para así poder saber cuál es el modelo a aplicar en cada semana.
+Se requiere que unos de los datos que va a ser enviado a este servicio junto con todos los atributos del alumno, sea el número de la semana, para así poder saber cuál es el modelo a aplicar en cada semana.
 
-Por lo tanto, el procedimiento una semana cualquiera, será el
-siguiente: Para empezar, la información previamente definida del
-alumnado debe ser enviada al servicio web en marcha. Luego, esta
-información es formateada dependiendo del tipo de dato que tenga cada
-atributo, ya que para poder realizar predicciones y correlaciones
-todos los atributos deben ser numéricos y los valores nulos necesitan
-ser traducidos a un formato para que, a la hora de predecir, se tengan
-en cuenta como el valor que son, esto es, un 0. Una vez la información
-pueda ser interpretada por el predictor, se utiliza el modelo generado
-para la semana de la que provenga la información, y se predice la
-clase, nuestro caso, es un atributo con dos posibles valores “Alarma”
-y “No Alarma”.
+Por lo tanto, el procedimiento una semana cualquiera, será el siguiente:
+\begin{itemize}
+\item{Para empezar, la información previamente definida del alumnado debe ser enviada al servicio web en marcha.}
+\item{Luego, esta información es formateada dependiendo del tipo de dato que tenga cada atributo, ya que para poder realizar predicciones y correlaciones todos los atributos deben ser numéricos y los valores nulos necesitan ser traducidos a un formato para que, a la hora de predecir, se tengan en cuenta como el valor que son, esto es, un 0.}
+\item{Una vez la información pueda ser interpretada por el predictor, se utiliza el modelo generado para la semana de la que provenga la información, y se predice la clase, nuestro caso, es un atributo con dos posibles valores “Alarma” y “No Alarma”.}
+\end{itemize}
 
-Una vez tenemos una columna con esta información, es el momento de
-sacar, a nivel general, esto es de los 60 alumnos, el peso que ha
-tenido cada atributo a la hora de tomar la decisión. Para ello
-simplemente son comparados cada atributo de todos los alumnos con la
-nueva columna de predicciones que acabamos de generar. Estos llamados
-coeficientes de correlaciones, nos indicarán globalmente qué atributo
-ha sido decisivo a la hora de indicar la alarma y, por tanto, todos y
-cada uno de los atributos del alumnado tendrán un porcentaje con su
-nivel de influencia. Estos coeficientes de correlaciones pueden ser
-calculados con diferentes métodos: el coeficiente de correlación de
-concordancia Kendall, el coeficiente de correlación de Pearson y el
-coeficiente de correlación de Spearman. En nuestro caso, calcularemos
-el coeficiente de correlación de Kendall (8) ya que contamos con ambos
-tipos de valores, ordinales e intervalos.  Cada semana, tanto las
-predicciones como las correlaciones variarán, ya que teniendo en
-cuenta el modelo se generarán X alarmas, y en función de estas
-alarmas, las relativas correlaciones.
+\paragraph{}
+Una vez tenemos una columna con esta información, es el momento de sacar, a nivel general, esto es de los 60 alumnos, el peso que ha tenido cada atributo a la hora de tomar la decisión. Para ello simplemente son comparados cada atributo de todos los alumnos con la nueva columna de predicciones que acabamos de generar. Estos llamados coeficientes de correlaciones, nos indicarán globalmente qué atributo ha sido decisivo a la hora de indicar la alarma y, por tanto, todos y cada uno de los atributos del alumnado tendrán un porcentaje con su nivel de influencia. Estos coeficientes de correlaciones pueden ser calculados con diferentes métodos:
+\begin{itemize}
+\item{Coeficiente de correlación de concordancia Kendall}
+\item{Coeficiente de correlación de Pearson}
+\item{Coeficiente de correlación de Spearman.}
+\end{itemize}
 
-Desde una perspectiva más general, por tanto, a este script se le
-envía un mensaje en formato JSON relativo a 60 alumnos con toda la
-información recopilada en una semana por cada asignatura, exceptuando
-la clase, y nos devolverá un resultado con la clase y el id de cada
-alumno. Además, en otra lista, los 9 atributos del alumnado cada uno
-con el valor de su correlación respecto a la clase.
+En nuestro caso,tras realizar una pequeña investigación se decidió que se calculará el coeficiente de correlación de Kendall \cite{coeficienteDeCorrelacionKendall} ya que contamos con ambos tipos de valores, ordinales e intervalos.
+
+Cada semana, tanto las predicciones como las correlaciones variarán, ya que teniendo en cuenta el modelo se generarán X alarmas, y en función de estas alarmas, las relativas correlaciones.
+
+Desde una perspectiva más general, por tanto, al programa se le envía un mensaje en formato JSON relativo a 60 alumnos con toda la información recopilada en una semana por cada asignatura, exceptuando la clase, y nos devolverá un resultado con la clase y el id de cada alumno. Además, en otra lista, los 9 atributos del alumnado cada uno con el valor de su correlación respecto a la clase.
+
 
 \subsection{Clasificador bayesiano ingenuo}
 \paragraph{}
-Una vez conseguidos los resultados anteriores, se estudió la
-posibilidad de encontrar el motivo por el cual a cada alumno se le
-había sido asignado un valor de la clase u otro, esto es, el motivo
-por el cual una alarma había saltado o no. Gracias a las correlaciones
-pudimos saber qué tendencia seguía una clase por asignatura, pero no
-cómo el modelo había llegado a asignar cada valor a la clase.
+Una vez conseguidos los resultados anteriores, se estudió la posibilidad de encontrar el motivo por el cual a cada alumno se le había sido asignado un valor de la clase u otro, esto es, los detonantes qué más influencia habían tenido al aparecer una alarma .Gracias a las correlaciones podemos saber qué tendencia seguían los atributos de una clase por asignatura, pero no cómo el modelo había llegado a asignar cada valor a la clase.
 
-Por lo tanto, después de analizar y definir cómo funcionaba el método
-del bayesiano ingenuo que usamos para generar los modelos y más tarde
-realizar las predicciones, se empezó a aplicarlo al dataset creado
-para la generación de los modelos y así poder conocer el impacto
-individual de cada atributo a la hora de decidir la clase.
+Por lo tanto, después de analizar y definir cómo funcionaba el método del bayesiano ingenuo que usamos para generar los modelos y más tarde realizar las predicciones, se empezó a aplicarlo al dataset creado para la generación de los modelos y así poder conocer el impacto individual de cada atributo a la hora de decidir que  el valor de la clase fuera “Alarma”.
 
-Antes de explicar cómo se aplicó dicho método bayesiano al dataset
-utilizado en este proyecto, se realizará un pequeño resumen del
-funcionamiento del clasificador bayesiano ingenuo. Este clasificador,
-tiene en cuenta cada posible valor que puede tener un atributo, así
-pues, en nuestro caso, por ejemplo, la atención es un atributo cuyos
-valores posibles son un numérico del 1 al 5. Una vez tenemos estos
-posibles valores, es necesario conseguir la suma del total acumulado
-para cada valor, o, lo que es lo mismo, cuántas veces ha sido repetido
-un mismo valor entre el dataset para un atributo en concreto. Este
-total acumulado nos indica la presencia de ese valor dentro de un
-atributo. Además, este método, como su nombre indica, clasifica el
-dataset en tantos grupos como valores posibles tenga la clase. Este
-trabajo es necesario ya que más tarde el total acumulado conseguido
-anteriormente será dividido entre el total acumulado del valor de la
-clase al que pertenezca. En conclusión, esta división indicará para
-cada valor de un mismo atributo, que influencia o peso tiene sobre la
-clase a la hora de decidir su valor. Las predicciones que genera este
-clasificador utilizan este porcentaje de influencia de cada valor para
-cada atributo y el porcentaje de influencia de un valor de la clase
-entre el total de valores de la clase. En total, nos genera tantos
-valores como posibles valores tenga la clase, y el máximo entre ellos
-será la predicción final.
+Antes de explicar cómo se aplicó dicho método bayesiano al dataset utilizado en este proyecto, se realizará un pequeño resumen del funcionamiento del clasificador bayesiano ingenuo:
+\paragraph{}
+Este clasificador, tiene en cuenta cada posible valor que puede tener un atributo, así pues, en nuestro caso, por ejemplo, la atención es un atributo cuyos valores posibles son un numérico del 1 al 5.
+\paragraph{}
+Una vez tenemos estos posibles valores, es necesario conseguir la suma del total acumulado para cada valor, o, lo que es lo mismo, cuántas veces ha sido repetido un mismo valor entre el dataset para un atributo en concreto.
+ \paragraph{}
+El total acumulado nos indica la presencia de ese valor dentro de un atributo. Además, este método, como su nombre indica, clasifica el dataset en tantos grupos como valores posibles tenga la clase.
+ \paragraph{}
+Este trabajo es necesario ya que más tarde el total acumulado conseguido anteriormente será dividido entre el total acumulado del valor de la clase al que pertenezca. En conclusión, esta división indicará para cada valor de un mismo atributo, que influencia o peso tiene sobre la clase a la hora de decidir su valor. Las predicciones que genera este clasificador utilizan este porcentaje de influencia de cada valor para cada atributo y el porcentaje de influencia de un valor de la clase entre el total de valores de la clase. En total, nos genera tantos valores como posibles valores tenga la clase, y el máximo entre ellos será la predicción final.
 
-\irudia{template/figs/naiveBayes.jpg}{1}{Ejemplo de predicción
+\irudia{template/figs/naiveBayes.jpg}{0.8}{Ejemplo de predicción
   NaiveBayes}
 
 \paragraph{}
@@ -337,63 +267,45 @@ el dataset inicial solo se recogen muestras de 300 alumnos y entre
 ellos los valores que llegan a repetirse no cubren todo el abanico de
 posibles valores para ese atributo.
 
-\irudia{template/figs/vecesRepetidas.jpg}{1}{Ejemplo de semana con las
-  veces repetidas por cada valor de atributo.}
-\irudia{template/figs/porcentajeValorAtributo.jpg}{1}{Ejemplo de
-  semana con los porcentajes por cada valor de atributo (fichero de
-  semana 5).}
+\irudia{template/figs/vecesRepetidas.jpg}{1}{Ejemplo de semana con los porcentajes por cada valor de atributo(fichero de semana 5).}
+\irudia{template/figs/porcentajeValorAtributo.jpg}{1}{Ejemplo de semana con las veces repetidas por cada valor de atributo.}
 
 \subsection{Conclusiones}
 \paragraph{}
-
-Evolución de las alarmas de un alumno: Como hemos mencionado
-anteriormente el script en R nos indicará que alumnos tiene alarmas y
+\textbf{Evolución de las alarmas de un alumno:}\\ 
+Como hemos mencionado anteriormente el script en R nos indicará que alumnos tiene alarmas y
 cuáles no, por tanto, a lo largo del año podremos construir un gráfico
 viendo que semanas han sido más críticas para un alumno en concreto.
-Evolución de las alarmas de una clase: Al igual que en el apartado
-anterior podremos apreciar qué asignaturas o qué semanas han sido las
-peores en cuanto al rendimiento de toda una clase.  Evolución de la
-influencia de cada atributo a la hora de generar alarmas: Con la
-intención de conocer en cada semana cuáles han sido los atributos que
+\paragraph{}
+\textbf{Evolución de las alarmas de una clase:}\\ 
+Al igual que en el apartado anterior podremos apreciar qué asignaturas o qué semanas han sido las
+peores en cuanto al rendimiento de toda una clase.  
+\paragraph{}
+\textbf{Evolución de la influencia de cada atributo a la hora de generar alarmas:}\\
+Con la intención de conocer en cada semana cuáles han sido los atributos que
 han acarreado alarmas en general y cuales han sido los más
 importantes. Haciendo uso de las correlaciones, podremos realizar
-gráficos de la evolución por atributo y/o semana.  Evolución de los
-atributos que han generado una alarma en un alumno: Ya que sabemos los
-valores de los atributos para cada alumno cada semana, podremos saber
+gráficos de la evolución por atributo y/o semana. 
+\paragraph{}
+\textbf{Evolución de los atributos que han generado una alarma en un alumno:} 
+Ya que sabemos los valores de los atributos para cada alumno cada semana, podremos saber
 qué influencia han tenido estos a la hora de generar una alarma de
 forma personalizada.
 
 \subsection{Análisis de los resultados}
 \paragraph{}
 \textbf{Ejemplo nuevo alumno en semana 3 con alarma:}
-\irudia{template/figs/tablaEjemploAlumno.jpg}{1}{}
+\irudia{template/figs/tablaEjemploAlumno.jpg}{1}{Tabla ejemplo}
 
 \paragraph{}
 \paragraph{}
-\textbf{Resultado del programa teniendo en cuenta el fichero de la
-  semana 3:} Atributo:Asistencia Valor:66.68 Peso:0.02173913
-Atributo:EntregableC11 Valor:VERDADERO Peso:0.630434783 NO
-EXISTENTE-Atributo:NotaEntregableC11 Valor:1.43 Peso:0.043478261
-Atributo:HorasC11 Valor:1.42 Peso:0.043478261 Atributo:AtencionP1
-Valor:2 Peso:0.239130435 Atributo:MotivacionP1 Valor:2
-Peso:0.217391304 Atributo:AtencionA1 Valor:3 Peso:0.217391304
-Atributo:MotivacionA1 Valor:3 Peso:0.152173913 Atributo:Criterios
-Valor:Alarma Peso:0.153846154
-
-\paragraph{}
-\textbf{Porcentaje de influencia respecto a la alarma ordenado por
-  atributo:} [EntregableC11=0.630434783, AtencionP1=0.239130435,
-  AtencionA1=0.217391304, MotivacionP1=0.217391304,
-  Criterios=0.153846154, MotivacionA1=0.152173913,
-  NotaEntregableC11=0.043478261, HorasC11=0.043478261,
-  Asistencia=0.02173913]
+\textbf{Resultado del programa teniendo en cuenta el fichero de la semana 3:}
+\irudia{template/figs/ficheroSemana3.jpg}{0.6}{Resultado del programa}
 
 \paragraph{}
 \textbf{Aplicamos parte de la fórmula del Clasificador Bayesiano
-  Ingenuo:}
-
-	0.63 * 0.23 * 0.21 * 0.21 * 0.15 * 0.04 * 0.04 * 0.02 *
-        \textbf{0.15}
+  Ingenuo:}\\
+0.63 * 0.23 * 0.21 * 0.21 * 0.15 * 0.04 * 0.04 * 0.02 * \textbf{0.15}
 
 \paragraph{}
 \textbf{Como podemos ver, los atributos que más han afectado a que a
@@ -406,21 +318,13 @@ Valor:Alarma Peso:0.153846154
 \end{enumerate}
 
 \paragraph{}
-\textbf{Conclusión:} Los valores de los atributos que son decimales no
-van a tener una gran influencia en la alarma ya que han sido
-analizamos únicamente 300 alumnos. Cuantos más grande fuera la muestra
-de alumnos, mayores las posibilidades de que estos valores se repitan
-y, por tanto, la influencia en la alarma sería más exacta. Si bien es
-cierto que este problema podría solucionarse mediante un sistema de
-valoración que se basa en nominales, como, “Alto”,”Medio”,”Bajo”...No
-sería realista ya que hoy en día las universidades valoran con una
-nota del 0 al 10, decimales incluidos.
+\textbf{Conclusión:} Los valores de los atributos que son decimales no van a tener una gran influencia en la alarma ya que han sido analizamos únicamente 300 alumnos. Cuantos más grande fuera la muestra de alumnos, mayores las posibilidades de que estos valores se repitan y, por tanto, la influencia en la alarma sería más exacta. Si bien es cierto que este problema podría solucionarse mediante un sistema de valoración que se basa en nominales, como, “Alto”,”Medio”,”Bajo”...No sería realista ya que hoy en día las universidades valoran con una nota del 0 al 10, decimales incluidos.
 
 \paragraph{}
 \textbf{Variación de alarmas por semana:}
-\paragraph{}
 \irudia{template/figs/variacionAlarmas.png}{0.8}{Variación de alarmas
-  por semana.}  Como podemos apreciar en este gráfico, el número de
+  por semana.}  
+Como podemos apreciar en este gráfico, el número de
 predicciones por semana aumenta drásticamente a medida que avanza el
 año. Además el salto más grande se puede observar en la sexta semana
 donde se han realizado ya los exámenes y por ende, los alumnos que
@@ -428,39 +332,9 @@ hayan suspendido o hayan sacado una nota más baja de lo habitual,
 serán avisados a tiempo antes de que la situación empeore.
 
 \paragraph{}
-\textbf{Conclusión:} Como podemos apreciar tanto en la tabla como en
-los diferentes gráficos de las variaciones de las correlaciones por
-cada semana(9), algunos atributos como la motivación recibida por el
-alumno, indica que en las primeras semanas del curso, este atributo
-tiene una gran influencia para que el valor de la clase sea “Alarma” y
-que, por tanto, será un aspecto a tener en cuenta a la hora de dar
-clase ya que será necesario motivar a los alumnos las primeras semanas
-del curso ,pero no será tan importante al final.
-
-En general, todos los gráficos indican que a partir de la semana 5,
-esto es, la mitad del curso transcurrido, la mayoría de los atributos
-tienen un gran influencia en la alarma. Sin embargo, hay un atributo
-en particular que tiene valores más altos que los demás, la
-nota(0.65). Y es que, al fin y al cabo, va a ser la que mayor peso
-tenga siempre a la hora de decidir si sacar una alarma o no por que
-será al final el atributo que indique si un alumno pasa o no de
-curso.Un estudio(9) indica que el coeficiente de correlación Kendall
-comparado a otros coeficientes como el Pearson o Spearman indica con
-un 0,7 lo que otros indican como un 0.9 de correlación por lo que la
-nota está cerca de decidir en algunas semanas directamente si un
-alumno tiene alarma o no.  La asistencia también es un atributo a
-tener en cuenta, pero que variará dependiendo de la centro en el que
-se implante el sistema. No todos los centro dan importancia a acudir a
-las clases lectivas.
-
-Por último, destacar que los valores negativos en el coeficiente de
-correlación indican que a medida que ese atributo aumenta, el valor de
-la clase decrece, esto es, está más cerca de llegar a ser una alarma.
-
-\paragraph{}
-\textbf{Evolución de las correlaciones por semana:}
-\paragraph{}
-\irudia{template/figs/tablaAtributos.png}{0.9}{ Correlaciones por
+\textbf{Evolución de las correlaciones por semana:}\\
+\\
+\irudia{template/figs/evolucionCorrelacionesSemanas.jpg}{0.9}{ Evolución correlaciones por
   semana.}
 \paragraph{}
 \irudia{template/figs/asistencia.png}{0.8}{Gráfico de la variación del
@@ -473,3 +347,11 @@ la clase decrece, esto es, está más cerca de llegar a ser una alarma.
 \irudia{template/figs/motivacionA1.png}{0.8}{Gráfico de la variación
   del coeficiente de correlación del atributo motivación indicado por
   el alumno entre semanas.}
+  
+\paragraph{}
+\textbf{Conclusión:} Como  podemos apreciar tanto en la tabla como en los diferentes gráficos de las variaciones de las correlaciones por cada semana (9,), algunos atributos como la motivación recibida por el alumno, indica que en las primeras semanas del curso, este atributo tiene una gran influencia para que el valor de la clase sea “Alarma” y que, por tanto, será un aspecto a tener en cuenta a la hora de dar clase ya que será necesario motivar a los alumnos las primeras semanas del curso ,pero no será tan importante al final.
+
+En general, todos los gráficos indican que a partir de la semana 5, esto es, la mitad del curso transcurrido, la mayoría de los atributos tienen un gran influencia en la alarma. Sin embargo, hay un atributo en particular que tiene valores más altos que los demás, la nota(0.65). Y es que, al fin y al cabo, va a ser la que mayor peso tenga siempre a la hora de decidir si sacar una alarma o no por que será al final el atributo que indique si un alumno pasa o no de curso.Un estudio \cite{coeficienteDeCorrelacionKendall2} indica que el coeficiente de correlación Kendall comparado a otros coeficientes como el Pearson o Spearman indica con un 0,7 lo que otros métodos indican cómo un 0.9 de correlación por lo que la nota está cerca de decidir en algunas semanas directamente si un alumno tiene alarma o no.
+La asistencia también es un atributo a tener en cuenta, pero que variará dependiendo del centro en el que se implante el sistema. No todos los centros dan la misma importancia a asistir a clase.
+
+Por último, destacar que los valores negativos en el coeficiente de correlación indican que a medida que ese atributo aumenta, el valor de la clase decrece, esto es, está más cerca de llegar a ser una alarma.

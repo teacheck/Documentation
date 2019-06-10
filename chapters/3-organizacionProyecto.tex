@@ -1,7 +1,5 @@
 \chapter{Organización del Proyecto}
 % \thispagestyle{empty}
-
-\paragraph{}
 \section{Planning Inicial}
 \paragraph{}
 Antes de empezar a programar hemos decidido tanto pensar cómo
@@ -40,7 +38,7 @@ El entorno de desarrollo de la aplicación debe ser uniforme para todos
 los desarrolladores. Es una tarea difícil ya que siempre hay
 diferencias de sistemas operativos y cada máquina es unica. Pero hay
 una solución que Teacheck utilizará tanto para el entorno de
-desarrollo como para el de producción y servidor de testeo, Docker.
+desarrollo como para el de producción y servidor de testeo, Docker.\cite{dockerDocs}
 
 \paragraph{}
 Docker es una herramienta que permite la “contenerización” de sistemas
@@ -62,7 +60,7 @@ El entorno funciona con una serie de containers desplegados en una red
 virtual de Docker con toda la configuración necesaria para que
 funcionen correctamente. Para ese múltiple despliegue y comunicación
 entre esos containers en una red virtual se utiliza una extensión de
-Docker, docker-compose. La idea por detrás de esta herramienta es
+Docker, docker-compose \cite{dockercomposeDocs}. La idea por detrás de esta herramienta es
 simplemente automatizar ciertos aspectos de Docker para que sea más
 productivo. La herramienta docker-compose tiene la capacidad de
 desplegar un entorno compuesto de varios containers dentro de una red
@@ -141,7 +139,7 @@ docker-compose:
 \paragraph{}
 Aquí un pequeño esquema del entorno con los diferentes contenedores
 que son necesarios para llevar a cabo el desarrollo de la aplicación.
-\irudia{template/figs/EntornoDesarrollo.png}{1}{Entorno de Desarrollo en
+\irudia{template/figs/EntornoDesarrollo.png}{0.8}{Entorno de Desarrollo en
   contenedores}
 
 \subsection{Control de Versiones}

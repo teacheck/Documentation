@@ -1,16 +1,16 @@
 \chapter{Infraestructura}
 
-\section{Introdución}
+\section{Introducción}
 Para servir la solución que proponemos se necesita una plataforma que
 pueda llevar a cabo todo el proceso mencionado en apartados
 anteriores. Una plataforma robusta, escalable y de alto
-rendimiento. Para ello la estrategia de Teacheck es separar sus
+rendimiento \cite{releaseit}. Para ello la estrategia de Teacheck es separar sus
 distintos componentes que forman el sistema en microservicios, esto
-porque Teacheck apuesta por un sistema distribuido. La razón para esta
+porque Teacheck apuesta por un sistema distribuido \cite{buildingReactiveMicroservices}. La razón para esta
 decisión es la solución que queremos dar, para llegar a conseguir lo
 propuesto se necesitan diversos procesos que tratan de solucionar
 distintos problemas, y las soluciones proporcionadas por cada servicio
-conforman la solución final.Así pues, cada microservicio es autónomo y
+conforman la solución final. Así pues, cada microservicio es autónomo y
 escalable.
 
 Por lo tanto separando estos procesos en pequeños sistemas es lo ideal
@@ -111,14 +111,14 @@ Teacheck.
 
 \section{Servicios}
 
-La implementación de cada servicio se basa en el Toolkit Vertx. Este
+La implementación de cada servicio se basa en el Toolkit Vertx\cite{vertxDocs}. Este
 toolkit no es un framework de por sí y se puede utilizar de manera
 embebida en cualquier aplicación. Vertx permite un flujo de desarrollo
 asíncrono y está hecha para el desarrollo de microservicios aunque
 tiene módulos de soporte para el desarrollo de aplicaciones web. Se
 eligió Vertx por su alta escalabilidad, optimizando concurrencia en la
 utilización minimizada de hilos para la gestión de tareas y de alto
-rendimiento.
+rendimiento.\cite{reactivex}
 
 
 Todos los servicios de Teacheck se comunican con uno central que es el
@@ -127,6 +127,7 @@ servicio por separado, incluyendo el central, y al final la
 composición de todos los servicios y el flujo de operación.
 
 \subsection{Conversor}
+\label{conversor}
 
 Teacheck ofrece su solución a distintas instituciones y cada una de
 ellas ya tienen una manera predeterminada de cómo manipular sus datos
@@ -178,7 +179,10 @@ consola. Con esto, no queremos ver si el conversor a traducido bien el
 XML a formato JSON, sino comprobar que la comunicación entre los dos
 servicios se ha efectuado correctamente.
 
+\irudia{template/figs/conversor.jpg}{1}{Arquitectura del servicio conversor.}
+
 \subsection{Servicio de machine learning}
+\label{machineLearning}
 
 Para realizar el seguimiento de los alumnos semanalmente se necesita
 hacer un escaneo de los datos. Estos escaneos ocurren a cada semana y
@@ -278,6 +282,7 @@ necesaria. Esta parte del servicio es simplemente para testeo del
 servicio de predicción por parte otras entidades.
 
 \subsection{Aplicación web}
+\label{webAplication}
 
 La aplicación es un componente esencial para la solución final. El
 objetivo de la aplicación es la monitorización de todos los alumnos
@@ -312,6 +317,7 @@ En definitiva la aplicación refleja los resultados del análisis y
 procesamiento continuo que emplea nuestro sistema.
 
 \subsection{Servicio de mensajería}
+\label{servicioMensajería}
 
 Teacheck provee un servicio adicional y que se puede implementar en
 cada institución, el control de asistencia. Este control de asistencia
@@ -333,6 +339,7 @@ proporcionará más precisión en relación a la asistencia del alumno y
 mejoras en el sistema de Machine Learning.
 
 \subsection{Servicio de acceso a datos}
+\label{accesoADatos}
 
 Todos los datos manejados por el sistema está ubicado en una base de
 datos central que sólo es accesible a través del servicio de acceso de
@@ -367,7 +374,7 @@ riesgos donde analizaremos nuestro sistema en busca de las posibles
 amenazas a las cuales nuestro sistema está expuesto.
 
 \subsection{Análisis de riesgos}
-
+\nocite{incibeAnalisisderiesgos}
 \paragraph{}
 ALCANCE
 
@@ -600,7 +607,9 @@ EVALUAR EL RIESGO
 Una vez analizados los riesgos y las medidas a tomar en cuenta, es
 necesario calcular el riesgo que cada una de esas amenazas supone para
 nuestro sistema. Para ello, estimaremos la probabilidad y el impacto
-de los riesgos.
+de los riesgos.\\
+
+
 \paragraph{}
 Tabla para el cálculo de la probabilidad
 \irudia{template/figs/analisis3.jpg}{0.8}{Tabla para el cálculo de la
@@ -673,7 +682,7 @@ certificados pueden ser fácilmente obtenidos con Let’s Encrypt, una
 autoridad conocida y que provee certificados de forma gratuita.
 \paragraph{}
 La autenticación y autorización de los usuario se hará mediante un
-Identity Provider. El IDP elegido es Keycloak, un sistema que realiza
+Identity Provider. El IDP elegido es Keycloak \cite{keycloakDocs}, un sistema que realiza
 la gestión de acceso e identidad. Este llevará a cabo la autenticación
 de usuarios así como la autorización mediante roles. Dicho esto,
 Teacheck tiene tres roles distintos: alumno, profesor y
@@ -743,8 +752,8 @@ configuración pasados al contenedor. Claramente esos ficheros de
 configuración son datos no sensibles, como puertos, hostname, nombre
 de la base de datos , etc. Para datos sensibles hay que utilizar la
 funcionalidad del entorno en el cual se despliega todos los servicios,
-Docker swarm. El modo swarm de Docker permite la gestión centralizada
-de secrets (password, certificados TLS, claves SSH, etc). Con el swarm
+Docker swarm \cite{dockerSwarmDocs}. El modo swarm de Docker permite la gestión centralizada
+de secrets \cite{dockerSwarmSecretsDocs}(password, certificados TLS, claves SSH, etc). Con el swarm
 podemos garantizar que container tiene acceso a qué secrets y en el
 intercambio son encriptadas así como cuando están guardadas en el
 swarm. Por lo tanto toda configuración sensible debe utilizar la
@@ -907,3 +916,12 @@ certificados.
 Respecto a la base de datos, viendo que la asignación y control de los
 privilegios es importante, se le da la importancia y atención que se
 merece.
+
+\subsection{Auditoría de seguridad del código}
+\paragraph{}
+Hemos utilizado SonarQube para el análisis estático del código. Sonar tiene como objetivo hacer el mantenimiento del código en busca de vulnerabilidades, bugs,  malas prácticas, etc.
+
+Dicho esto abajo se puede ver los resultados estables de todos los servicios de Teacheck: 
+\irudia{template/figs/sonar1.jpg}{1}{Resultados estables de los servicios de Teacheck.}
+Después de averiguar los resultados finales en el término del proyecto se consiguió solucionar los bugs relacionados con el servicio de ml-service-middleware y solucionar dos vulnerabilidades del format-conversor. Además podemos ver que la aplicación web Teacheck tenía algunas duplicaciones en el código. Estas últimas también se solucionaron. En la siguiente foto podemos ver las estadísticas finales de cada servicio.
+\irudia{template/figs/sonar2.jpg}{1}{Estadísticas finales de cada servicio.}
